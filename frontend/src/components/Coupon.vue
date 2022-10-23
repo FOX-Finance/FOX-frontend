@@ -1,9 +1,9 @@
 <template>
   <div class="uk-width-1-1">
     <hr />
-    <div class="uk-inline">
+    <div class="uk-inline form-icon">
       <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-        ><span>LTV</span></a
+        ><img src="../img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
       >
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
@@ -30,7 +30,7 @@
     </div>
     <div class="uk-inline form-icon">
       <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-        ><img src="../img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
+        ><img src="../img/sin-icon.png" style="width: 20px" /><span>SIN</span></a
       >
       <input
         readonly
