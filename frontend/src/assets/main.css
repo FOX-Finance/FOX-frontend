@@ -51,6 +51,15 @@ a:hover {
     padding: 20px;
 }
 
+.input-form-blue,
+.input-form-blue:hover,
+.input-form-blue:active,
+.input-form-blue:focus {
+    background-color: #e3ffbdcd;
+    border-radius: 25px;
+    padding: 20px;
+}
+
 .result-form,
 .result-form:hover,
 .result-form:active,
@@ -87,4 +96,8 @@ a:hover {
 
 .wrap {
     padding: 10px;
+}
+
+.wrap-top {
+    padding-top: 10px;
 }

@@ -13,6 +13,11 @@ const router = createRouter({
             path: '/buyback',
             name: 'buyback',
             component: () => import('../views/BuybackView.vue')
+        },
+        {
+            path: '/coupon',
+            name: 'coupon',
+            component: () => import('../views/CouponView.vue')
         }
     ]
 })

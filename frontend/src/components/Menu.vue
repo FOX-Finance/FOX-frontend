@@ -17,6 +17,11 @@
                 <div class="uk-button uk-button-text">Buyback&recollateralize</div>
               </RouterLink>
             </li>
+            <li>
+              <RouterLink to="/coupon">
+                <div class="uk-button uk-button-text">Coupon</div>
+              </RouterLink>
+            </li>
           </ul>
         </div>
       </div>
