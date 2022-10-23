@@ -10861,8 +10861,7 @@ iframe[data-uk-cover] {
 .uk-card-primary > :not([class*='uk-card-media']) .uk-button-text,
 .uk-card-secondary.uk-card-body .uk-button-text,
 .uk-card-secondary > :not([class*='uk-card-media']) .uk-button-text,
-.uk-overlay-primary .uk-button-text,
-.uk-offcanvas-bar .uk-button-text {
+.uk-overlay-primary .uk-button-text {
   color: #fff;
 }
 .uk-light .uk-button-text::before,

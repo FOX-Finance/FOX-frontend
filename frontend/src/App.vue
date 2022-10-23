@@ -35,11 +35,12 @@ import Wallet from "./components/Wallet.vue";
 }
 
 .container {
-  padding: 30px;
-  padding-top: 0px;
+  padding: 10px;
 }
 
 .wallet-container {
-  padding-bottom: 10px;
+  padding:10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 </style>
