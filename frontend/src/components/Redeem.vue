@@ -1,13 +1,10 @@
 <template>
   <div class="uk-width-1-1">
     <hr />
-    <div class="uk-inline">
-      <a
-        class="uk-form-icon uk-form-icon-flip input-form-icon"
-        href="#"
-        uk-icon="icon: heart; ratio: 0.9;"
-        ><span>FOX</span></a
-      >
+    <div class="uk-inline form-icon">
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+        ><img src="../img/fox-icon.png" style="width: 20px" /><span>FOX</span>
+      </a>
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
@@ -16,14 +13,12 @@
     <div class="wrap">
       <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
     </div>
-    <div class="uk-inline">
-      <a
-        class="uk-form-icon uk-form-icon-flip input-form-icon"
-        href="#"
-        uk-icon="icon: ethereum; ratio: 0.2;"
-        ><span>BNB</span></a
+    <div class="uk-inline form-icon">
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+        ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span></a
       >
-      <input readonly
+      <input
+        readonly
         class="uk-input result-form uk-form-width-medium uk-form-large"
         type="number"
       />
@@ -31,7 +26,7 @@
     <div class="wrap">
       <div class="uk-inline">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-          ><span style="padding-right: 2px">LTV</span></a
+          ><span>LTV</span></a
         >
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
@@ -45,19 +40,19 @@
     <div class="wrap">
       <span class="icon-circle" uk-icon="plus"></span>
     </div>
-    <div class="uk-inline">
-      <a
-        class="uk-form-icon uk-form-icon-flip input-form-icon"
-        href="#"
-        uk-icon="icon: happy; ratio: 0.9;"
-        ><span>FOXS</span></a
+    <div class="uk-inline form-icon">
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+        ><img src="../img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
       >
-      <input readonly
+      <input
+        readonly
         class="uk-input result-form uk-form-width-medium uk-form-large"
         type="number"
       />
     </div>
     <hr />
-    <button class="uk-button uk-button-default uk-button-large form-button">Connect Wallet</button>
+    <button class="uk-button uk-button-default uk-button-large form-button">
+      Connect Wallet
+    </button>
   </div>
 </template>

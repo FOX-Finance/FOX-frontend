@@ -98,6 +98,10 @@ a:hover {
     opacity: 0.5;
 }
 
+.form-icon span {
+    padding-left: 2px;
+}
+
 .wrap {
     padding: 10px;
 }

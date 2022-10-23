@@ -2,10 +2,7 @@
   <div class="uk-width-1-1">
     <hr />
     <div class="uk-inline">
-      <a
-        class="uk-form-icon uk-form-icon-flip input-form-icon"
-        href="#"
-        uk-icon="icon: ethereum; ratio: 0.2;"
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
         ><span>CDP#</span></a
       >
       <input
@@ -20,12 +17,9 @@
         style="margin-left: -1px"
       ></span>
     </div>
-    <div class="uk-inline">
-      <a
-        class="uk-form-icon uk-form-icon-flip input-form-icon"
-        href="#"
-        uk-icon="icon: ethereum; ratio: 0.2;"
-        ><span>BNB</span></a
+    <div class="uk-inline form-icon">
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+        ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span></a
       >
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
@@ -34,10 +28,7 @@
     </div>
     <div class="wrap">
       <div class="uk-inline">
-        <a
-          class="uk-form-icon uk-form-icon-flip input-form-icon"
-          href="#"
-          uk-icon="icon: ethereum; ratio: 0.2;"
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
           ><span>LTV</span></a
         >
         <input
@@ -64,12 +55,9 @@
         style="margin-left: -1px"
       ></span>
     </div>
-    <div class="uk-inline">
-      <a
-        class="uk-form-icon uk-form-icon-flip input-form-icon"
-        href="#"
-        uk-icon="icon: ethereum; ratio: 0.2;"
-        ><span>FOXS</span></a
+    <div class="uk-inline form-icon">
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+        ><img src="../img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
       >
       <input
         readonly
