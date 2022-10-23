@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import Menu from "./components/Menu.vue";
+import Wallet from "./components/Wallet.vue";
 </script>
 
 <template>
@@ -8,7 +9,12 @@ import Menu from "./components/Menu.vue";
     <div class="background"></div>
     <div class="uk-text-center uk-width-1-1 uk-height-1-1">
       <Menu />
-      <div id="container" class="uk-width-1-1" style="text-align: center">
+      <div class="wallet-container uk-width-1-1" style="text-align: center">
+        <div class="uk-width-2xlarge" style="display: inline-block">
+          <Wallet />
+        </div>
+      </div>
+      <div class="container uk-width-1-1" style="text-align: center">
         <div class="uk-width-2xlarge" style="display: inline-block">
           <RouterView />
         </div>
@@ -28,8 +34,12 @@ import Menu from "./components/Menu.vue";
   background-repeat: repeat;
 }
 
-#container {
+.container {
   padding: 30px;
   padding-top: 0px;
+}
+
+.wallet-container {
+  padding-bottom: 10px;
 }
 </style>

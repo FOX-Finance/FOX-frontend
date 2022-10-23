@@ -7,11 +7,11 @@ import Redeem from "../components/Redeem.vue";
   <div class="width-1-1-medium">
     <div class="uk-card uk-card-default">
       <div>
-        <ul class="uk-flex-center" uk-tab data-uk-tab="{connect:'#my-id'}">
+        <ul class="uk-flex-center" uk-tab data-uk-tab="{connect:'#mint-tab-contents'}">
           <li class="uk-active"><a href="#">Mint</a></li>
           <li><a href="#">Redeem</a></li>
         </ul>
-        <ul id="my-id" class="uk-switcher uk-margin">
+        <ul id="mint-tab-contents" class="uk-switcher">
           <li>
             <Mint />
           </li>

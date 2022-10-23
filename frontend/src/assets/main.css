@@ -18,6 +18,11 @@ a:hover {
     text-decoration: none;
 }
 
+.uk-form-large,
+.uk-form-large:focus {
+    border-color: transparent;
+}
+
 .width-1-1-medium {
     width: 100%;
     max-width: 400px;
@@ -30,4 +35,56 @@ a:hover {
     margin-left: auto;
     margin-right: auto;
     border-left: 2px solid #a2a29c;
-  }
+}
+
+/* Mint, Redeem, Buyback, Recollateralize View */
+.description {
+    font-size: 0.8rem;
+}
+
+.input-form,
+.input-form:hover,
+.input-form:active,
+.input-form:focus {
+    background-color: #f2f2f2;
+    border-radius: 25px;
+    padding: 20px;
+}
+
+.result-form,
+.result-form:hover,
+.result-form:active,
+.result-form:focus {
+    background-color: #ffe6bd;
+    border-radius: 25px;
+    padding: 20px;
+}
+
+.input-form-icon {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.form-button {
+    border-radius: 25px;
+}
+
+.icon-circle {
+    box-sizing: border-box;
+    width: 36px;
+    height: 36px;
+    border-radius: 500px;
+    background: transparent;
+    color: #000;
+    vertical-align: middle;
+    /* 1 */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.1s ease-in-out;
+    transition-property: color, background-color;
+    opacity: 0.5;
+}
+
+.wrap {
+    padding: 10px;
+}

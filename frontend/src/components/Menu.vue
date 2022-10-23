@@ -30,13 +30,22 @@
   font-family: "Fredoka One", cursive;
   font-size: 2rem;
   color: rgb(72, 73, 58);
-  margin-top: 40px;
+  margin-top: 25px;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0);
   border-radius: 70px;
-  padding: 10px;
   padding-left: 20px;
   padding-right: 20px;
+  box-shadow: 0 14px 25px rgba(0, 0, 0, 0);
+  /* animation: color-change 5s infinite; */
+}
+
+@keyframes color-change {
+  0% { color: #fd1892; }
+  25% { color: #2c90fc; }
+  50% { color: #b8fd33; }
+  75% { color: #fec837; }
+  100% { color: #fd1892; }
 }
 
 .uk-navbar-nav > li > a {
@@ -55,6 +64,6 @@
 }
 
 .menu {
-  padding: 10px;
+  padding-bottom: 10px;
 }
 </style>
