@@ -30,7 +30,7 @@ a:hover {
 }
 
 .padding-right {
-    padding-right: 10px;
+    padding-right: 25px;
 }
 
 .custom-divider-vertical {
@@ -124,5 +124,11 @@ a:hover {
     #nav-bar-sm,
     #nav-title-sm {
         display: flex;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .padding-right {
+        padding-right: 10px;
     }
 }
