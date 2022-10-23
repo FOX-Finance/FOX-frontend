@@ -9,13 +9,11 @@ const router = createRouter({
             name: 'mint',
             component: MintView
         },
-        /*
         {
-            path: '/explore',
-            name: 'explore',
-            component: () => import('../views/ExploreView.vue')
+            path: '/buyback',
+            name: 'buyback',
+            component: () => import('../views/BuybackView.vue')
         }
-        */
     ]
 })
 

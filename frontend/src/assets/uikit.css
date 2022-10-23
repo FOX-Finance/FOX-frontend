@@ -1585,7 +1585,7 @@ select.uk-form-width-xsmall {
   width: 130px;
 }
 .uk-form-width-medium {
-  width: 200px;
+  width: 300px;
 }
 .uk-form-width-large {
   width: 500px;
@@ -1846,7 +1846,7 @@ select.uk-form-width-xsmall {
   bottom: 0;
   left: 0;
   /* 2 */
-  width: 40px;
+  width: 100px;
   /* 3 */
   display: inline-flex;
   justify-content: center;
@@ -1870,7 +1870,7 @@ select.uk-form-width-xsmall {
  * Input padding
  */
 .uk-form-icon:not(.uk-form-icon-flip) ~ .uk-input {
-  padding-left: 40px !important;
+  padding-left: 100px !important;
 }
 /*
  * Position modifier
@@ -1880,7 +1880,7 @@ select.uk-form-width-xsmall {
   left: auto;
 }
 .uk-form-icon-flip ~ .uk-input {
-  padding-right: 40px !important;
+  padding-right: 100px !important;
 }
 /* ========================================================================
    Component: Button
@@ -5852,7 +5852,7 @@ ul.uk-nav-sub {
   bottom: 0;
   left: 20px;
   right: 0;
-  border-bottom: 1px solid #e5e5e5;
+  /*border-bottom: 1px solid #e5e5e5;*/
 }
 /*
  * 1. Space is allocated solely based on content dimensions: 0 0 auto
@@ -5900,7 +5900,9 @@ ul.uk-nav-sub {
 /* Active */
 .uk-tab > .uk-active > a {
   color: #333;
-  border-color: #1e87f0;
+  background-color:rgba(100, 100, 100, 0.3);
+  border-radius: 20px;
+  /* border-color: #1e87f0; */
 }
 /* Disabled */
 .uk-tab > .uk-disabled > a {
