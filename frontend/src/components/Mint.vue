@@ -7,20 +7,59 @@ import {
   getAllowance,
   getShareAmount,
   getDebtAmount,
+  getMintAmount,
 } from "../assets/js/interface_request.js";
+import { DECIMAL, DECIMAL14, PRECISION } from "../assets/js/contract.js";
 
 export default {
   data() {
     return {
       connected: false,
       approval_weth: false,
-      approval_sin: false,
       approval_foxs: false,
 
-      bnb: 0,
-      ltv: 1,
-      foxs: 0,
+      bnb: BigInt(0),
+      ltv: 0,
+      foxs: BigInt(0),
+      mint: BigInt(0),
     };
+  },
+  computed: {
+    formattedBNB: {
+      get() {
+        let result = Number(this.bnb / DECIMAL14);
+        return (result / PRECISION).toString();
+      },
+      set(value) {
+        this.bnb = BigInt(value * DECIMAL);
+      },
+    },
+    formattedLTV: {
+      get() {
+        return (this.ltv / 100).toString();
+      },
+      set(value) {
+        this.ltv = value * 100;
+      },
+    },
+    formattedFOXS: {
+      get() {
+        let result = Number(this.foxs / DECIMAL14);
+        return (result / PRECISION).toString();
+      },
+      set(value) {
+        this.foxs = BigInt(value * DECIMAL);
+      },
+    },
+    formattedMINT: {
+      get() {
+        let result = Number(this.mint / DECIMAL14);
+        return (result / PRECISION).toString();
+      },
+      set(value) {
+        this.mint = BigInt(value * DECIMAL);
+      },
+    },
   },
   mounted() {
     this.emitter.on("metamask-connect-event", (msg) => {
@@ -39,14 +78,9 @@ export default {
       getAllowance("WETH").then((allowance_weth) => {
         if (allowance_weth != 0) {
           this.approval_weth = true;
-          getAllowance("SIN").then((allowance_sin) => {
-            if (allowance_sin != 0) {
-              this.approval_sin = true;
-              getAllowance("FOXS").then((allowance_foxs) => {
-                if (allowance_foxs != 0) {
-                  this.approval_foxs = true;
-                }
-              });
+          getAllowance("FOXS").then((allowance_foxs) => {
+            if (allowance_foxs != 0) {
+              this.approval_foxs = true;
             }
           });
         }
@@ -73,11 +107,6 @@ export default {
           if (success) this.approval_weth = true;
           else this.approval_weth = false;
         });
-      } else if (!this.approval_sin) {
-        approveMax("SIN").then((success) => {
-          if (success) this.approval_sin = true;
-          else this.approval_sin = false;
-        });
       } else if (!this.approval_foxs) {
         approveMax("FOXS").then((success) => {
           if (success) this.approval_foxs = true;
@@ -86,22 +115,30 @@ export default {
       }
     },
     mintOnClick: function () {
-      console.log("mintOnClick");
-      openAndDepositAndBorrow(this.bnb, this.bnb * this.ltv).then((result) => {
+      openAndDepositAndBorrow(this.bnb, (this.bnb * BigInt(this.ltv)) / BigInt(10000)).then((result) => {
         if (result) console.log("mint success!");
         else console.log("mint failed!");
       });
     },
     inputBNB: function () {
-      getShareAmount(this.bnb * this.ltv).then((result) => {
+      getShareAmount(this.bnb, this.ltv).then((result) => {
         this.foxs = result;
+        getMintAmount(this.bnb, this.ltv, this.foxs).then((mintResult) => {
+          this.mint = mintResult;
+        });
       });
     },
     inputFOXS: function () {
-      getDebtAmount(this.foxs).then((result) => {
-        if (this.ltv > 0) this.bnb = result / this.ltv;
+      getDebtAmount(this.foxs, this.ltv).then((result) => {
+        if (this.ltv > 0) this.bnb = result;
         else this.bnb = 0;
+        getMintAmount(this.bnb, this.ltv, this.foxs).then((mintResult) => {
+          this.mint = mintResult;
+        });
       });
+    },
+    inputLTV: function () {
+      this.inputBNB();
     },
   },
 };
@@ -117,19 +154,20 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
-        v-model="bnb"
+        v-model="formattedBNB"
         @input="inputBNB"
       />
     </div>
     <div class="wrap">
       <div class="uk-inline">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-          ><span>LTV</span></a
+          ><span>LTV(%)</span></a
         >
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
           type="number"
-          v-model="ltv"
+          v-model="formattedLTV"
+          @input="inputLTV"
         />
       </div>
     </div>
@@ -147,7 +185,7 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
-        v-model="foxs"
+        v-model="formattedFOXS"
         @input="inputFOXS"
       />
     </div>
@@ -163,10 +201,11 @@ export default {
         readonly
         class="uk-input result-form uk-form-width-medium uk-form-large"
         type="number"
+        v-model="formattedMINT"
       />
     </div>
     <hr />
-    <div v-if="approval_weth && approval_sin && approval_foxs">
+    <div v-if="approval_weth && approval_foxs">
       <button
         class="uk-button uk-button-default uk-button-large form-button"
         @click="mintOnClick"
@@ -180,7 +219,6 @@ export default {
         @click="approveOnClick"
       >
         <span v-if="!approval_weth">Approve(WETH)</span>
-        <span v-else-if="!approval_sin">Approve(SIN)</span>
         <span v-else-if="!approval_foxs">Approve(FOXS)</span>
       </button>
     </div>

@@ -21,18 +21,27 @@ async function allowance_contract(_contract, _account, _address) {
     return response;
 }
 
-async function requiredShareAmountFromDebt_contract(_contract, _debtAmount) {
-    console.log("-- [request] requiredShareAmountFromDebt");
-    let response = await _contract.methods.requiredShareAmountFromDebt(_debtAmount).call();
-    console.log("-- [response] requiredShareAmountFromDebt :", response);
+async function requiredShareAmountFromCollateralWithLtv_contract(_contract, _collateralAmount, _ltv) {
+    console.log("-- [request] requiredShareAmountFromCollateralWithLtv");
+    console.log("_collateralAmount", _collateralAmount)
+    console.log("_ltv", _ltv)
+    let response = await _contract.methods.requiredShareAmountFromCollateralWithLtv(_collateralAmount, _ltv).call();
+    console.log("-- [response] requiredShareAmountFromCollateralWithLtv :", response);
     return response;
 }
 
-async function requiredDebtAmountFromShare_contract(_contract, _shareAmount) {
-    console.log("-- [request] requiredDebtAmountFromShare");
-    let response = await _contract.methods.requiredDebtAmountFromShare(_shareAmount).call();
-    console.log("-- [response] requiredDebtAmountFromShare :", response);
+async function requiredCollateralAmountFromShareWithLtv_contract(_contract, _shareAmount, _ltv) {
+    console.log("-- [request] requiredCollateralAmountFromShareWithLtv");
+    let response = await _contract.methods.requiredCollateralAmountFromShareWithLtv(_shareAmount, _ltv).call();
+    console.log("-- [response] requiredCollateralAmountFromShareWithLtv :", response);
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromDebt_contract, requiredDebtAmountFromShare_contract };
+async function expectedMintAmountWithLtv_contract(_contract, _collateralAmount, _ltv, _shareAmount) {
+    console.log("-- [request] expectedMintAmountWithLtv");
+    let response = await _contract.methods.expectedMintAmountWithLtv(_collateralAmount, _ltv, _shareAmount).call();
+    console.log("-- [response] expectedMintAmountWithLtv :", response);
+    return response;
+}
+
+export { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract };

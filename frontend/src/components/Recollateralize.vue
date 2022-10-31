@@ -29,7 +29,7 @@
     <div class="wrap">
       <div class="uk-inline">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-          ><span>LTV</span></a
+          ><span>LTV(%)</span></a
         >
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
