@@ -1,7 +1,25 @@
-<script setup>
+<script>
 import { RouterLink, RouterView } from "vue-router";
 import Menu from "./components/Menu.vue";
 import Wallet from "./components/Wallet.vue";
+
+export default {
+  data() {
+    return {
+      connected: false,
+    };
+  },
+  components: {
+    Menu,
+    Wallet,
+  },
+  mounted() {
+    this.emitter.on("metamask-connect-event",
+      msg => { this.connected = true;}
+    );
+  }
+};
+
 </script>
 
 <template>
