@@ -3,7 +3,10 @@ import {
   connectMetamask,
   getAccount,
   approveMax,
+  openAndDepositAndBorrow,
   getAllowance,
+  getShareAmount,
+  getDebtAmount,
 } from "../assets/js/interface_request.js";
 
 export default {
@@ -13,6 +16,10 @@ export default {
       approval_weth: false,
       approval_sin: false,
       approval_foxs: false,
+
+      bnb: 0,
+      ltv: 1,
+      foxs: 0,
     };
   },
   mounted() {
@@ -61,17 +68,17 @@ export default {
     },
     approveOnClick: function () {
       console.log("approveOnClick (approval_weth) : ", this.approval_weth);
-      if (!approval_weth) {
+      if (!this.approval_weth) {
         approveMax("WETH").then((success) => {
           if (success) this.approval_weth = true;
           else this.approval_weth = false;
         });
-      } else if (!approval_sin) {
+      } else if (!this.approval_sin) {
         approveMax("SIN").then((success) => {
           if (success) this.approval_sin = true;
           else this.approval_sin = false;
         });
-      } else if (!approval_foxs) {
+      } else if (!this.approval_foxs) {
         approveMax("FOXS").then((success) => {
           if (success) this.approval_foxs = true;
           else this.approval_foxs = false;
@@ -80,12 +87,21 @@ export default {
     },
     mintOnClick: function () {
       console.log("mintOnClick");
-      /*
-      mint().then((success) => {
-        if (success)  this.approval = true;
-        else this.approval = false;
+      openAndDepositAndBorrow(this.bnb, this.bnb * this.ltv).then((result) => {
+        if (result) console.log("mint success!");
+        else console.log("mint failed!");
       });
-      */
+    },
+    inputBNB: function () {
+      getShareAmount(this.bnb * this.ltv).then((result) => {
+        this.foxs = result;
+      });
+    },
+    inputFOXS: function () {
+      getDebtAmount(this.foxs).then((result) => {
+        if (this.ltv > 0) this.bnb = result / this.ltv;
+        else this.bnb = 0;
+      });
     },
   },
 };
@@ -101,6 +117,8 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
+        v-model="bnb"
+        @input="inputBNB"
       />
     </div>
     <div class="wrap">
@@ -111,6 +129,7 @@ export default {
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
           type="number"
+          v-model="ltv"
         />
       </div>
     </div>
@@ -128,6 +147,8 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
+        v-model="foxs"
+        @input="inputFOXS"
       />
     </div>
     <div class="wrap">

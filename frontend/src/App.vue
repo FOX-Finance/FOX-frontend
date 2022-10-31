@@ -1,4 +1,5 @@
 <script>
+import { connectContract } from "./assets/js/interface_request.js";
 import { RouterLink, RouterView } from "vue-router";
 import Menu from "./components/Menu.vue";
 import Wallet from "./components/Wallet.vue";
@@ -17,6 +18,8 @@ export default {
     this.emitter.on("metamask-connect-event",
       msg => { this.connected = true;}
     );
+
+    connectContract();
   }
 };
 

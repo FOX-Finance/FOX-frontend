@@ -2,7 +2,7 @@
  * Declarations
  */
 import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract } from "./contract_request.js"
+import { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromDebt_contract, requiredDebtAmountFromShare_contract  } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
 
@@ -16,6 +16,17 @@ let contract_sin = '';
 /* 
  * Initialize functions
  */
+async function connectContract() {
+    console.log("connect to contract!");
+    window.web3 = new Web3(window.ethereum);
+    contract_fox = await new window.web3.eth.Contract(FOX_CONTRACT_ABI, FOX_CONTRACT_ADDR);
+    contract_foxfarm = await new window.web3.eth.Contract(FOXFARM_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR);
+    contract_weth = await new window.web3.eth.Contract(WETH_CONTRACT_ABI, WETH_CONTRACT_ADDR);
+    contract_foxs = await new window.web3.eth.Contract(FOXS_CONTRACT_ABI, FOXS_CONTRACT_ADDR);
+    contract_sin = await new window.web3.eth.Contract(SIN_CONTRACT_ABI, SIN_CONTRACT_ADDR);
+    console.log("connect to contract done.");
+}
+
 async function connectMetamask() {
     // metamask installed
     const provider = window.ethereum;
@@ -45,12 +56,6 @@ async function connectMetamask() {
                 console.log("You have succefully switched to Binance Test network")
 
                 // set global variables (contract, account)
-                window.web3 = new Web3(window.ethereum);
-                contract_fox = await new window.web3.eth.Contract(FOX_CONTRACT_ABI, FOX_CONTRACT_ADDR);
-                contract_foxfarm = await new window.web3.eth.Contract(FOXFARM_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR);
-                contract_weth = await new window.web3.eth.Contract(WETH_CONTRACT_ABI, WETH_CONTRACT_ADDR);
-                contract_foxs = await new window.web3.eth.Contract(FOXS_CONTRACT_ABI, FOXS_CONTRACT_ADDR);
-                contract_sin = await new window.web3.eth.Contract(SIN_CONTRACT_ABI, SIN_CONTRACT_ADDR);
                 const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                 account = accounts[0];
                 return true;
@@ -93,19 +98,38 @@ function getApproveAddress(contractName) {
 async function approveMax(contractName) {
     let _contract = getContract(contractName);
     let _address = getApproveAddress(contractName);
-
     if (_contract === '' || getAccount() === '') return 0;
     let response = await approveMax_contract(_contract, getAccount(), _address);
+    return response;
+}
+
+async function openAndDepositAndBorrow(depositAmount, borrowAmount) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await openAndDepositAndBorrow_contract(_contract, getAccount(), depositAmount, borrowAmount);
     return response;
 }
 
 async function getAllowance(contractName) {
     let _contract = getContract(contractName);
     let _address = getApproveAddress(contractName);
-
     if (_contract === '' || getAccount() === '') return 0;
     let response = await allowance_contract(_contract, getAccount(), _address);
     return response;
 }
 
-export { connectMetamask, getAccount, approveMax, getAllowance };
+async function getShareAmount(debtAmount) {
+    let _contract = getContract("FOX");
+    if (_contract === '') return 0;
+    let response = await requiredShareAmountFromDebt_contract(_contract, debtAmount);
+    return response;
+}
+
+async function getDebtAmount(shareAmount) {
+    let _contract = getContract("FOX");
+    if (_contract === '') return 0;
+    let response = await requiredDebtAmountFromShare_contract(_contract, shareAmount);
+    return response;
+}
+
+export { connectContract, connectMetamask, getAccount, approveMax, openAndDepositAndBorrow, getAllowance, getShareAmount, getDebtAmount };
