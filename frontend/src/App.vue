@@ -8,6 +8,7 @@ export default {
   data() {
     return {
       connected: false,
+      loading: false,
     };
   },
   components: {
@@ -15,18 +16,26 @@ export default {
     Wallet,
   },
   mounted() {
-    this.emitter.on("metamask-connect-event",
-      msg => { this.connected = true;}
-    );
+    this.emitter.on("metamask-connect-event", (msg) => {
+      this.connected = msg;
+    });
+
+    this.emitter.on("loading-event", (msg) => {
+      this.loading = msg;
+    });
 
     connectContract();
-  }
+  },
 };
-
 </script>
 
 <template>
   <div>
+    <div v-if="loading" class="spinner-outer">
+      <div class="spinner-inner">
+        <div uk-spinner="ratio: 3"></div>
+      </div>
+    </div>
     <div class="background"></div>
     <div class="uk-text-center uk-width-1-1 uk-height-1-1">
       <Menu />
@@ -55,12 +64,27 @@ export default {
   background-repeat: repeat;
 }
 
+.spinner-outer {
+  z-index: 2;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.spinner-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -50px 0 0 -50px;
+}
+
 .container {
   padding: 10px;
 }
 
 .wallet-container {
-  padding:10px;
+  padding: 10px;
   padding-top: 0px;
   padding-bottom: 0px;
 }

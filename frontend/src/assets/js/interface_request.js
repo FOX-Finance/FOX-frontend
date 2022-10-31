@@ -87,7 +87,7 @@ function getContract(contractName) {
 
 function getApproveAddress(contractName) {
     if (contractName === "WETH") return FOXFARM_CONTRACT_ADDR;
-    else if (contractName === "FOXS") return FOX_CONTRACT_ADDR;
+    else if (contractName === "FOXS") return FOXFARM_CONTRACT_ADDR;
     else if (contractName === "SIN") return FOX_CONTRACT_ADDR;
 }
 

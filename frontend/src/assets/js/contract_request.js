@@ -17,7 +17,7 @@ async function openAndDepositAndBorrow_contract(_contract, _account, _depositAmo
 
 /* Call */
 async function allowance_contract(_contract, _account, _address) {
-    console.log("-- [request] allowance");
+    console.log("-- [request] allowance", _contract, _address);
     let response = await _contract.methods.allowance(_account, _address).call();
     console.log("-- [response] allowance :", response);
     return response;

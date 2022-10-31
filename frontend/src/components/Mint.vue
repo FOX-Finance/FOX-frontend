@@ -63,8 +63,8 @@ export default {
   },
   mounted() {
     this.emitter.on("metamask-connect-event", (msg) => {
-      this.connected = true;
-      this.checkAllowance();
+      this.connected = msg;
+      if (this.connected) this.checkAllowance();
     });
 
     if (getAccount() !== "") {
@@ -103,19 +103,25 @@ export default {
     approveOnClick: function () {
       console.log("approveOnClick (approval_weth) : ", this.approval_weth);
       if (!this.approval_weth) {
+        this.emitter.emit("loading-event", true);
         approveMax("WETH").then((success) => {
+          this.emitter.emit("loading-event", false);
           if (success) this.approval_weth = true;
           else this.approval_weth = false;
         });
       } else if (!this.approval_foxs) {
+        this.emitter.emit("loading-event", true);
         approveMax("FOXS").then((success) => {
+          this.emitter.emit("loading-event", false);
           if (success) this.approval_foxs = true;
           else this.approval_foxs = false;
         });
       }
     },
     mintOnClick: function () {
+      this.emitter.emit("loading-event", true);
       openAndDepositAndBorrow(this.bnb, (this.bnb * BigInt(this.ltv)) / BigInt(10000)).then((result) => {
+        this.emitter.emit("loading-event", false);
         if (result) console.log("mint success!");
         else console.log("mint failed!");
       });

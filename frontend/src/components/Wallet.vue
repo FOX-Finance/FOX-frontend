@@ -10,10 +10,12 @@ export default {
   },
   mounted() {
     this.emitter.on("metamask-connect-event", (msg) => {
-      this.connected = true;
-      let account = getAccount();
-      this.btnText = account;
-      this.btnTooltip = account;
+      this.connected = msg;
+      if (this.connected) {
+        let account = getAccount();
+        this.btnText = account;
+        this.btnTooltip = account;
+      }
     });
   },
   methods: {
