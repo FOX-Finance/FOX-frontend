@@ -39,7 +39,7 @@
           </li>
           <li uk-toggle="#offcanvas-slide">
             <RouterLink to="/buyback">
-              <div class="uk-button uk-button-text">Buyback&recollateralize</div>
+              <div class="uk-button uk-button-text uk-text-left">Buyback<br/>&recollateralize</div>
             </RouterLink>
           </li>
           <li uk-toggle="#offcanvas-slide">
