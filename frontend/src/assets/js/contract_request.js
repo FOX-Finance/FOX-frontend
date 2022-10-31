@@ -7,6 +7,8 @@ async function approveMax_contract(_contract, _account, _address) {
 }
 
 async function openAndDepositAndBorrow_contract(_contract, _account, _depositAmount, _borrowAmount) {
+    console.log("_depositAmount", _depositAmount)
+    console.log("_borrowAmount", _borrowAmount)
     console.log("-- [request] openAndDepositAndBorrow");
     let response = await _contract.methods.openAndDepositAndBorrow(_depositAmount, _borrowAmount).send({ from: _account });
     console.log("-- [response] openAndDepositAndBorrow :", response);

@@ -6,8 +6,8 @@ import SIN from './json/SIN.json'
 import address from './json/env.json'
 
 const DECIMAL = 10**18;
-const DECIMAL14 = BigInt(10**14);
-const PRECISION = 10**4;
+const DECIMAL14 = BigInt(10**10);
+const PRECISION = 10**8;
 
 const FOX_CONTRACT_ADDR = address.FOX;
 const FOXFARM_CONTRACT_ADDR = address.FoxFarm;
