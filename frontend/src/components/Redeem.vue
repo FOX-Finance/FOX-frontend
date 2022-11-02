@@ -115,6 +115,9 @@ export default {
         this.foxs = BigInt(result[1]);
       });
     },
+    inputLTV: function () {
+      this.inputFOX();
+    },
   },
 };
 </script>
