@@ -6,7 +6,7 @@ import {
   getAllowance,
   getCurrentLTVFromCDP,
   getRedeemAmount,
-  redeem
+  redeem,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL14, PRECISION } from "../assets/js/contract.js";
 
@@ -16,7 +16,7 @@ export default {
       connected: false,
       approval_fox: false,
 
-      cdp: '',
+      cdp: "",
       fox: BigInt(0),
       weth: BigInt(0),
       ltv: 0,
@@ -150,17 +150,14 @@ export default {
       >
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
-        type="number" min="0"
+        type="number"
+        min="0"
         v-model="formattedCDP"
         @input="inputCDP"
       />
     </div>
     <div class="wrap">
-      <span
-        class="icon-circle"
-        uk-icon="icon: arrow-down; ratio: 2;"
-        style="margin-left: -1px"
-      ></span>
+      <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
     </div>
     <div class="uk-inline form-icon">
       <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
