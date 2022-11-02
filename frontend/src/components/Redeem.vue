@@ -122,6 +122,7 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
+        v-model="cdp"
         @input="inputCDP"
       />
     </div>

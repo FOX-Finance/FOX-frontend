@@ -47,7 +47,7 @@ async function expectedMintAmountWithLtv_contract(_contract, _collateralAmount, 
 }
 
 async function currentLTV_contract(_contract, _id) {
-    console.log("-- [request] currentLTV");
+    console.log("-- [request] currentLTV", _id);
     let response = await _contract.methods.currentLTV(_id).call();
     console.log("-- [response] currentLTV :", response);
     return response;
