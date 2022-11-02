@@ -15,6 +15,13 @@ async function openAndDepositAndBorrow_contract(_contract, _account, _depositAmo
     return response;
 }
 
+async function RepayAndWithdraw_contract(_contract, _account, _id, _repayAmount, _withdrawAmount) {
+    console.log("-- [request] RepayAndWithdraw");
+    let response = await _contract.methods.RepayAndWithdraw(_id, _repayAmount, _withdrawAmount).send({ from: _account });
+    console.log("-- [response] RepayAndWithdraw :", response);
+    return response;
+}
+
 /* Call */
 async function allowance_contract(_contract, _account, _address) {
     console.log("-- [request] allowance");
@@ -60,4 +67,13 @@ async function expectedRedeemAmountWithLtv_contract(_contract, _stableAmount, _l
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract, expectedRedeemAmountWithLtv_contract };
+async function withdrawAmountToLTV_contract(_contract, _id, _multipliedLtv) {
+    console.log("-- [request] withdrawAmountToLTV", _id);
+    console.log("_id", _id)
+    console.log("_multipliedLtv", _multipliedLtv)
+    let response = await _contract.methods.withdrawAmountToLTV(_id, _multipliedLtv).call();
+    console.log("-- [response] withdrawAmountToLTV :", response);
+    return response;
+}
+
+export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract, expectedRedeemAmountWithLtv_contract, withdrawAmountToLTV_contract };

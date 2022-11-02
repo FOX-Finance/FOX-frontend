@@ -6,6 +6,7 @@ import {
   getAllowance,
   getCurrentLTVFromCDP,
   getRedeemAmount,
+  redeem
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL14, PRECISION } from "../assets/js/contract.js";
 
@@ -15,6 +16,7 @@ export default {
       connected: false,
       approval_fox: false,
 
+      cdp: '',
       fox: BigInt(0),
       weth: BigInt(0),
       ltv: 0,
@@ -22,6 +24,15 @@ export default {
     };
   },
   computed: {
+    formattedCDP: {
+      get() {
+        return this.cdp.toString();
+      },
+      set(value) {
+        if (value < 0) this.cdp = 0;
+        else this.cdp = value;
+      },
+    },
     formattedFOX: {
       get() {
         let result = Number(this.fox / DECIMAL14);
@@ -45,7 +56,7 @@ export default {
         return (this.ltv / 100).toString();
       },
       set(value) {
-        this.ltv = value * 100;
+        this.ltv = Math.round(value * 100);
       },
     },
     formattedFOXS: {
@@ -103,6 +114,14 @@ export default {
         });
       }
     },
+    redeemOnClick: function () {
+      this.emitter.emit("loading-event", true);
+      redeem(this.cdp, this.fox, this.ltv).then((result) => {
+        this.emitter.emit("loading-event", false);
+        if (result) console.log("redeem success!");
+        else console.log("redeem failed!");
+      });
+    },
     inputCDP: function () {
       getCurrentLTVFromCDP(this.cdp).then((result) => {
         this.ltv = result;
@@ -110,7 +129,7 @@ export default {
     },
     inputFOX: function () {
       getRedeemAmount(this.fox, this.ltv).then((result) => {
-        console.log("RESULT!", result[0])
+        console.log("RESULT!", result[0]);
         this.weth = BigInt(result[0]);
         this.foxs = BigInt(result[1]);
       });
@@ -131,8 +150,8 @@ export default {
       >
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
-        type="number"
-        v-model="cdp"
+        type="number" min="0"
+        v-model="formattedCDP"
         @input="inputCDP"
       />
     </div>
