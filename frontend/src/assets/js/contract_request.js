@@ -53,4 +53,11 @@ async function currentLTV_contract(_contract, _id) {
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract };
+async function expectedRedeemAmountWithLtv_contract(_contract, _stableAmount, _ltv) {
+    console.log("-- [request] expectedRedeemAmountWithLtv");
+    let response = await _contract.methods.expectedRedeemAmountWithLtv(_stableAmount, _ltv).call();
+    console.log("-- [response] expectedRedeemAmountWithLtv :", response);
+    return response;
+}
+
+export { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract, expectedRedeemAmountWithLtv_contract };

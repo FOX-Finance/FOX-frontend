@@ -5,6 +5,7 @@ import {
   approveMax,
   getAllowance,
   getCurrentLTVFromCDP,
+  getRedeemAmount,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL14, PRECISION } from "../assets/js/contract.js";
 
@@ -14,7 +15,6 @@ export default {
       connected: false,
       approval_fox: false,
 
-      cdp: 0,
       fox: BigInt(0),
       weth: BigInt(0),
       ltv: 0,
@@ -106,6 +106,13 @@ export default {
     inputCDP: function () {
       getCurrentLTVFromCDP(this.cdp).then((result) => {
         this.ltv = result;
+      });
+    },
+    inputFOX: function () {
+      getRedeemAmount(this.fox, this.ltv).then((result) => {
+        console.log("RESULT!", result[0])
+        this.weth = BigInt(result[0]);
+        this.foxs = BigInt(result[1]);
       });
     },
   },
