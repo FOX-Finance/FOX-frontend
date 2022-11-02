@@ -136,8 +136,7 @@ export default {
     },
     inputFOXS: function () {
       getDebtAmount(this.foxs, this.ltv).then((result) => {
-        if (this.ltv > 0) this.bnb = result;
-        else this.bnb = 0;
+        this.bnb = result;
         getMintAmount(this.bnb, this.ltv, this.foxs).then((mintResult) => {
           this.mint = mintResult;
         });
