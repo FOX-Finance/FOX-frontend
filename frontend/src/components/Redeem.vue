@@ -4,6 +4,7 @@ import {
   getAccount,
   approveMax,
   getAllowance,
+  getCurrentLTVFromCDP,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL14, PRECISION } from "../assets/js/contract.js";
 
@@ -19,6 +20,43 @@ export default {
       ltv: 0,
       foxs: BigInt(0),
     };
+  },
+  computed: {
+    formattedFOX: {
+      get() {
+        let result = Number(this.fox / DECIMAL14);
+        return (result / PRECISION).toString();
+      },
+      set(value) {
+        this.fox = BigInt(value * DECIMAL);
+      },
+    },
+    formattedWETH: {
+      get() {
+        let result = Number(this.weth / DECIMAL14);
+        return (result / PRECISION).toString();
+      },
+      set(value) {
+        this.weth = BigInt(value * DECIMAL);
+      },
+    },
+    formattedLTV: {
+      get() {
+        return (this.ltv / 100).toString();
+      },
+      set(value) {
+        this.ltv = value * 100;
+      },
+    },
+    formattedFOXS: {
+      get() {
+        let result = Number(this.foxs / DECIMAL14);
+        return (result / PRECISION).toString();
+      },
+      set(value) {
+        this.foxs = BigInt(value * DECIMAL);
+      },
+    },
   },
   mounted() {
     this.emitter.on("metamask-connect-event", (msg) => {
@@ -65,6 +103,11 @@ export default {
         });
       }
     },
+    inputCDP: function () {
+      getCurrentLTVFromCDP(this.cdp).then((result) => {
+        this.ltv = result;
+      });
+    },
   },
 };
 </script>
@@ -79,6 +122,7 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
+        @input="inputCDP"
       />
     </div>
     <div class="wrap">
@@ -95,6 +139,8 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
+        v-model="formattedFOX"
+        @input="inputFOX"
       />
     </div>
     <div class="wrap">
@@ -108,6 +154,8 @@ export default {
         readonly
         class="uk-input result-form uk-form-width-medium uk-form-large"
         type="number"
+        v-model="formattedWETH"
+        @input="inputWETH"
       />
     </div>
     <div class="wrap">
@@ -118,6 +166,8 @@ export default {
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
           type="number"
+          v-model="formattedLTV"
+          @input="inputLTV"
         />
       </div>
     </div>
@@ -135,6 +185,8 @@ export default {
         readonly
         class="uk-input result-form uk-form-width-medium uk-form-large"
         type="number"
+        v-model="formattedFOXS"
+        @input="inputFOXS"
       />
     </div>
     <hr />

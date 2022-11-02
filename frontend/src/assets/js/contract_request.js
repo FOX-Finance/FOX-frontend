@@ -17,7 +17,7 @@ async function openAndDepositAndBorrow_contract(_contract, _account, _depositAmo
 
 /* Call */
 async function allowance_contract(_contract, _account, _address) {
-    console.log("-- [request] allowance", _contract, _address);
+    console.log("-- [request] allowance");
     let response = await _contract.methods.allowance(_account, _address).call();
     console.log("-- [response] allowance :", response);
     return response;
@@ -46,4 +46,11 @@ async function expectedMintAmountWithLtv_contract(_contract, _collateralAmount, 
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract };
+async function currentLTV_contract(_contract, _id) {
+    console.log("-- [request] currentLTV");
+    let response = await _contract.methods.currentLTV(_id).call();
+    console.log("-- [response] currentLTV :", response);
+    return response;
+}
+
+export { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract };

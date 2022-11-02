@@ -2,7 +2,7 @@
  * Declarations
  */
 import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract } from "./contract_request.js"
+import { approveMax_contract, openAndDepositAndBorrow_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
 
@@ -129,14 +129,21 @@ async function getDebtAmount(shareAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
     let response = await requiredCollateralAmountFromShareWithLtv_contract(_contract, shareAmount, ltv);
-    return BigInt(response);;
+    return BigInt(response);
 }
 
 async function getMintAmount(collateralAmount, ltv, shareAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
     let response = await expectedMintAmountWithLtv_contract(_contract, collateralAmount, ltv, shareAmount);
-    return BigInt(response);;
+    return BigInt(response);
 }
 
-export { connectContract, connectMetamask, getAccount, approveMax, openAndDepositAndBorrow, getAllowance, getShareAmount, getDebtAmount, getMintAmount };
+async function getCurrentLTVFromCDP(cdpID) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '') return 0;
+    let response = await currentLTV_contract(_contract, cdpID);
+    return response;
+}
+
+export { connectContract, connectMetamask, getAccount, approveMax, openAndDepositAndBorrow, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getCurrentLTVFromCDP };
