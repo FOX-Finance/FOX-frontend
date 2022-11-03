@@ -120,7 +120,7 @@ export default {
     },
     mintOnClick: function () {
       this.emitter.emit("loading-event", true);
-      openAndDepositAndBorrow(this.bnb, (this.bnb * BigInt(this.ltv)) / BigInt(10000)).then((result) => {
+      openAndDepositAndBorrow(this.bnb, this.mint).then((result) => {
         this.emitter.emit("loading-event", false);
         if (result) console.log("mint success!");
         else console.log("mint failed!");
