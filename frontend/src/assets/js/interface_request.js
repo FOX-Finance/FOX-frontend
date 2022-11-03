@@ -114,7 +114,7 @@ async function redeem(cdpID, repayAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '' || getAccount() === '') return 0;
     let withdrawAmount = await withdrawAmountToLTV_contract(_contract, cdpID, ltv);
-    let response = await openAndDepositAndBorrow_contract(_contract, getAccount(), cdpID, repayAmount, withdrawAmount);
+    let response = await RepayAndWithdraw_contract(_contract, getAccount(), cdpID, repayAmount, withdrawAmount);
     return response;
 }
 

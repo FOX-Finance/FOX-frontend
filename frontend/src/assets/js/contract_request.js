@@ -17,7 +17,7 @@ async function openAndDepositAndBorrow_contract(_contract, _account, _depositAmo
 
 async function RepayAndWithdraw_contract(_contract, _account, _id, _repayAmount, _withdrawAmount) {
     console.log("-- [request] RepayAndWithdraw");
-    let response = await _contract.methods.RepayAndWithdraw(_id, _repayAmount, _withdrawAmount).send({ from: _account });
+    let response = await _contract.methods.repayAndWithdraw(_id, _repayAmount, _withdrawAmount).send({ from: _account });
     console.log("-- [response] RepayAndWithdraw :", response);
     return response;
 }
