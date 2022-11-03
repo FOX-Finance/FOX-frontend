@@ -2,7 +2,7 @@
  * Declarations
  */
 import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract, expectedRedeemAmountWithLtv_contract, withdrawAmountToLTV_contract } from "./contract_request.js"
+import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract, expectedRedeemAmountWithLtv_contract, withdrawAmountToLTV_contract, balanceOf_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
 
@@ -118,12 +118,19 @@ async function redeem(cdpID, repayAmount, ltv) {
     return response;
 }
 
+async function getBalance(contractName) {
+    let _contract = getContract(contractName);
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await balanceOf_contract(_contract, getAccount());
+    return BigInt(response);
+}
+
 async function getAllowance(contractName) {
     let _contract = getContract(contractName);
     let _address = getApproveAddress(contractName);
     if (_contract === '' || getAccount() === '') return 0;
     let response = await allowance_contract(_contract, getAccount(), _address);
-    return response;
+    return BigInt(response);
 }
 
 async function getShareAmount(collateralAmount, ltv) {
@@ -161,4 +168,4 @@ async function getRedeemAmount(stableAmount, ltv) {
     return response;
 }
 
-export { connectContract, connectMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getCurrentLTVFromCDP, getRedeemAmount };
+export { connectContract, connectMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getCurrentLTVFromCDP, getRedeemAmount };

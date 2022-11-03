@@ -9,7 +9,7 @@ import {
   getDebtAmount,
   getMintAmount,
 } from "../assets/js/interface_request.js";
-import { DECIMAL, DECIMAL14, PRECISION } from "../assets/js/contract.js";
+import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
 
 export default {
   data() {
@@ -27,7 +27,7 @@ export default {
   computed: {
     formattedBNB: {
       get() {
-        let result = Number(this.bnb / DECIMAL14);
+        let result = Number(this.bnb / DECIMAL10);
         return (result / PRECISION).toString();
       },
       set(value) {
@@ -44,7 +44,7 @@ export default {
     },
     formattedFOXS: {
       get() {
-        let result = Number(this.foxs / DECIMAL14);
+        let result = Number(this.foxs / DECIMAL10);
         return (result / PRECISION).toString();
       },
       set(value) {
@@ -53,7 +53,7 @@ export default {
     },
     formattedMINT: {
       get() {
-        let result = Number(this.mint / DECIMAL14);
+        let result = Number(this.mint / DECIMAL10);
         return (result / PRECISION).toString();
       },
       set(value) {

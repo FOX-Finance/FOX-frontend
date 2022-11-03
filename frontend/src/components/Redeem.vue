@@ -8,7 +8,7 @@ import {
   getRedeemAmount,
   redeem,
 } from "../assets/js/interface_request.js";
-import { DECIMAL, DECIMAL14, PRECISION } from "../assets/js/contract.js";
+import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
 
 export default {
   data() {
@@ -35,7 +35,7 @@ export default {
     },
     formattedFOX: {
       get() {
-        let result = Number(this.fox / DECIMAL14);
+        let result = Number(this.fox / DECIMAL10);
         return (result / PRECISION).toString();
       },
       set(value) {
@@ -44,7 +44,7 @@ export default {
     },
     formattedWETH: {
       get() {
-        let result = Number(this.weth / DECIMAL14);
+        let result = Number(this.weth / DECIMAL10);
         return (result / PRECISION).toString();
       },
       set(value) {
@@ -61,7 +61,7 @@ export default {
     },
     formattedFOXS: {
       get() {
-        let result = Number(this.foxs / DECIMAL14);
+        let result = Number(this.foxs / DECIMAL10);
         return (result / PRECISION).toString();
       },
       set(value) {
