@@ -3,7 +3,7 @@ import FOXFARM from './json/FoxFarm.json'
 import WETH from './json/WETH.json'
 import FOXS from './json/FOXS.json'
 import SIN from './json/SIN.json'
-import address from './json/env.json'
+import address from './json/address.json'
 
 const DECIMAL = 10**18;
 const DECIMAL14 = BigInt(10**10);
