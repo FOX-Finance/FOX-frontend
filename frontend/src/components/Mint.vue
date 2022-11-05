@@ -18,6 +18,7 @@ export default {
       approval_weth: false,
       approval_foxs: false,
 
+      cdp: 0,
       bnb: BigInt(0),
       ltv: 0,
       foxs: BigInt(0),
@@ -126,6 +127,9 @@ export default {
         else console.log("mint failed!");
       });
     },
+    inputCDP: function () {
+      console.log("inputcdp");
+    },
     inputBNB: function () {
       getShareAmount(this.bnb, this.ltv).then((result) => {
         this.foxs = result;
@@ -152,6 +156,43 @@ export default {
 <template>
   <div class="uk-width-1-1">
     <hr />
+    <div class="uk-inline form-icon">
+      <div
+        uk-form-custom="target: > button > span:first-child"
+        style="padding-left: 0px; padding-right: 0px"
+      >
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+          <span>CDP#</span>
+        </a>
+        <select
+          v-model="cdp"
+          aria-label="Custom controls"
+          class="form-button uk-form-width-medium uk-form-large"
+        >
+          <option value="">Please select...</option>
+          <option value="0">CDP #0</option>
+          <option value="1">CDP #1</option>
+          <option value="2">CDP #2</option>
+          <option value="3">CDP #3</option>
+        </select>
+        <button
+          class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
+          type="button"
+          tabindex="-1"
+          style="max-width: 100%"
+        >
+          <span></span>
+          <span
+            uk-icon="icon: chevron-down"
+            style="float: right; position: relative; right: 95px; top: 17px"
+          ></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+    </div>
     <div class="uk-inline form-icon">
       <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
         ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span>
@@ -237,3 +278,12 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+select {
+  text-align-last: left;
+  text-align: left;
+  -ms-text-align-last: left;
+  -moz-text-align-last: left;
+}
+</style>

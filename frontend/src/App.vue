@@ -37,7 +37,7 @@ export default {
       </div>
     </div>
     <div class="background"></div>
-    <div class="uk-text-center uk-width-1-1 uk-height-1-1">
+    <div class="uk-text-center uk-width-1-1 uk-height-1-1 wrap-top">
       <Menu />
       <div class="wallet-container uk-width-1-1" style="text-align: center">
         <div class="uk-width-2xlarge" style="display: inline-block">

@@ -123,6 +123,7 @@ export default {
       });
     },
     inputCDP: function () {
+      // new => empty 리턴하도로 바꾼다함 \
       getCurrentLTVFromCDP(this.cdp).then((result) => {
         this.ltv = result;
       });

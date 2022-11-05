@@ -1969,6 +1969,27 @@ select.uk-form-width-xsmall {
   border-color: #999999;
 }
 /*
+ * Default
+ */
+.uk-button-grey {
+  background-color: #f2f2f2;
+  color: #333;
+  border: 1px solid #e5e5e5;
+}
+/* Hover */
+.uk-button-grey:hover {
+  background-color: #f2f2f2;
+  color: #333;
+  border-color: #b2b2b2;
+}
+/* OnClick + Active */
+.uk-button-grey:active,
+.uk-button-grey.uk-active {
+  background-color: #f2f2f2;
+  color: #333;
+  border-color: #999999;
+}
+/*
  * Primary
  */
 .uk-button-primary {

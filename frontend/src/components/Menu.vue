@@ -90,7 +90,6 @@
   font-family: "Fredoka One", cursive;
   font-size: 2rem;
   color: rgb(72, 73, 58);
-  margin-top: 15px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0);
   border-radius: 70px;
