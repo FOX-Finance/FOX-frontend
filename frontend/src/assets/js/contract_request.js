@@ -30,25 +30,25 @@ async function allowance_contract(_contract, _account, _address) {
     return response;
 }
 
-async function requiredShareAmountFromCollateralWithLtv_contract(_contract, _collateralAmount, _ltv) {
+async function requiredShareAmountFromCollateralWithLtv_contract(_contract, _id, _collateralAmount, _ltv) {
     console.log("-- [request] requiredShareAmountFromCollateralWithLtv");
     console.log("_collateralAmount", _collateralAmount)
     console.log("_ltv", _ltv)
-    let response = await _contract.methods.requiredShareAmountFromCollateralWithLtv(_collateralAmount, _ltv).call();
+    let response = await _contract.methods.requiredShareAmountFromCollateralWithLtv(_id, _collateralAmount, _ltv).call();
     console.log("-- [response] requiredShareAmountFromCollateralWithLtv :", response);
     return response;
 }
 
-async function requiredCollateralAmountFromShareWithLtv_contract(_contract, _shareAmount, _ltv) {
+async function requiredCollateralAmountFromShareWithLtv_contract(_contract, _id, _shareAmount, _ltv) {
     console.log("-- [request] requiredCollateralAmountFromShareWithLtv");
-    let response = await _contract.methods.requiredCollateralAmountFromShareWithLtv(_shareAmount, _ltv).call();
+    let response = await _contract.methods.requiredCollateralAmountFromShareWithLtv(_id, _shareAmount, _ltv).call();
     console.log("-- [response] requiredCollateralAmountFromShareWithLtv :", response);
     return response;
 }
 
-async function expectedMintAmountWithLtv_contract(_contract, _collateralAmount, _ltv, _shareAmount) {
+async function expectedMintAmountWithLtv_contract(_contract, _id, _collateralAmount, _ltv, _shareAmount) {
     console.log("-- [request] expectedMintAmountWithLtv");
-    let response = await _contract.methods.expectedMintAmountWithLtv(_collateralAmount, _ltv, _shareAmount).call();
+    let response = await _contract.methods.expectedMintAmountWithLtv(_id, _collateralAmount, _ltv, _shareAmount).call();
     console.log("-- [response] expectedMintAmountWithLtv :", response);
     return response;
 }

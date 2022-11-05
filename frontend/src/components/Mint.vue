@@ -8,6 +8,7 @@ import {
   getShareAmount,
   getDebtAmount,
   getMintAmount,
+  getCurrentLTVFromCDP,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
 
@@ -133,24 +134,22 @@ export default {
     },
     changeCDP: function () {
       // new => empty 리턴하도로 바꾼다함
-      /*
       getCurrentLTVFromCDP(this.cdp).then((result) => {
         this.ltv = result;
       });
-      */
     },
     inputBNB: function () {
-      getShareAmount(this.bnb, this.ltv).then((result) => {
+      getShareAmount(this.cdp, this.bnb, this.ltv).then((result) => {
         this.foxs = result;
-        getMintAmount(this.bnb, this.ltv, this.foxs).then((mintResult) => {
+        getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
           this.mint = mintResult;
         });
       });
     },
     inputFOXS: function () {
-      getDebtAmount(this.foxs, this.ltv).then((result) => {
+      getDebtAmount(this.cdp, this.foxs, this.ltv).then((result) => {
         this.bnb = result;
-        getMintAmount(this.bnb, this.ltv, this.foxs).then((mintResult) => {
+        getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
           this.mint = mintResult;
         });
       });

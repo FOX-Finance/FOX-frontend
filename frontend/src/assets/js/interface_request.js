@@ -177,24 +177,24 @@ async function getAllowance(contractName) {
     return BigInt(response);
 }
 
-async function getShareAmount(collateralAmount, ltv) {
+async function getShareAmount(cdpID, collateralAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await requiredShareAmountFromCollateralWithLtv_contract(_contract, collateralAmount, ltv);
+    let response = await requiredShareAmountFromCollateralWithLtv_contract(_contract, cdpID, collateralAmount, ltv);
     return BigInt(response);
 }
 
-async function getDebtAmount(shareAmount, ltv) {
+async function getDebtAmount(cdpID, shareAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await requiredCollateralAmountFromShareWithLtv_contract(_contract, shareAmount, ltv);
+    let response = await requiredCollateralAmountFromShareWithLtv_contract(_contract, cdpID, shareAmount, ltv);
     return BigInt(response);
 }
 
-async function getMintAmount(collateralAmount, ltv, shareAmount) {
+async function getMintAmount(cdpID, collateralAmount, ltv, shareAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await expectedMintAmountWithLtv_contract(_contract, collateralAmount, ltv, shareAmount);
+    let response = await expectedMintAmountWithLtv_contract(_contract, cdpID, collateralAmount, ltv, shareAmount);
     return BigInt(response);
 }
 
