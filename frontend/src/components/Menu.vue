@@ -12,7 +12,6 @@
           uk-navbar-toggle-icon
           href="#offcanvas-slide"
           uk-toggle
-          style="padding-top:15px;"
         ></a>
       </div>
       <div class="uk-navbar-center">
