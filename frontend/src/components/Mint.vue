@@ -18,16 +18,17 @@ export default {
       approval_weth: false,
       approval_foxs: false,
 
-      cdp: 0,
-      bnb: BigInt(0),
-      ltv: 0,
-      foxs: BigInt(0),
-      mint: BigInt(0),
+      cdp: '',
+      bnb: '',
+      ltv: '',
+      foxs: '',
+      mint: '',
     };
   },
   computed: {
     formattedBNB: {
       get() {
+        if (this.bnb === '') return '';
         let result = Number(this.bnb / DECIMAL10);
         return (result / PRECISION).toString();
       },
@@ -37,6 +38,7 @@ export default {
     },
     formattedLTV: {
       get() {
+        if (this.ltv === '') return '';
         return (this.ltv / 100).toString();
       },
       set(value) {
@@ -45,6 +47,7 @@ export default {
     },
     formattedFOXS: {
       get() {
+        if (this.foxs === '') return '';
         let result = Number(this.foxs / DECIMAL10);
         return (result / PRECISION).toString();
       },
@@ -54,6 +57,7 @@ export default {
     },
     formattedMINT: {
       get() {
+        if (this.mint === '') return '';
         let result = Number(this.mint / DECIMAL10);
         return (result / PRECISION).toString();
       },
@@ -127,8 +131,13 @@ export default {
         else console.log("mint failed!");
       });
     },
-    inputCDP: function () {
-      console.log("inputcdp");
+    changeCDP: function () {
+      // new => empty 리턴하도로 바꾼다함
+      /*
+      getCurrentLTVFromCDP(this.cdp).then((result) => {
+        this.ltv = result;
+      });
+      */
     },
     inputBNB: function () {
       getShareAmount(this.bnb, this.ltv).then((result) => {
@@ -168,6 +177,7 @@ export default {
           v-model="cdp"
           aria-label="Custom controls"
           class="form-button uk-form-width-medium uk-form-large"
+          @change="changeCDP"
         >
           <option value="">Please select...</option>
           <option value="0">CDP #0</option>

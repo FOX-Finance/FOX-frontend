@@ -16,25 +16,17 @@ export default {
       connected: false,
       approval_fox: false,
 
-      cdp: "",
-      fox: BigInt(0),
-      weth: BigInt(0),
-      ltv: 0,
-      foxs: BigInt(0),
+      cdp: '',
+      fox: "",
+      weth: "",
+      ltv: "",
+      foxs: "",
     };
   },
   computed: {
-    formattedCDP: {
-      get() {
-        return this.cdp.toString();
-      },
-      set(value) {
-        if (value < 0) this.cdp = 0;
-        else this.cdp = value;
-      },
-    },
     formattedFOX: {
       get() {
+        if (this.fox === "") return "";
         let result = Number(this.fox / DECIMAL10);
         return (result / PRECISION).toString();
       },
@@ -44,6 +36,7 @@ export default {
     },
     formattedWETH: {
       get() {
+        if (this.weth === "") return "";
         let result = Number(this.weth / DECIMAL10);
         return (result / PRECISION).toString();
       },
@@ -53,6 +46,7 @@ export default {
     },
     formattedLTV: {
       get() {
+        if (this.ltv === "") return "";
         return (this.ltv / 100).toString();
       },
       set(value) {
@@ -61,6 +55,7 @@ export default {
     },
     formattedFOXS: {
       get() {
+        if (this.foxs === "") return "";
         let result = Number(this.foxs / DECIMAL10);
         return (result / PRECISION).toString();
       },
@@ -122,8 +117,8 @@ export default {
         else console.log("redeem failed!");
       });
     },
-    inputCDP: function () {
-      // new => empty 리턴하도로 바꾼다함 \
+    changeCDP: function () {
+      // new => empty 리턴하도로 바꾼다함
       getCurrentLTVFromCDP(this.cdp).then((result) => {
         this.ltv = result;
       });
@@ -145,17 +140,39 @@ export default {
 <template>
   <div class="uk-width-1-1">
     <hr />
-    <div class="uk-inline">
-      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-        ><span>CDP#</span></a
+    <div class="uk-inline form-icon">
+      <div
+        uk-form-custom="target: > button > span:first-child"
+        style="padding-left: 0px; padding-right: 0px"
       >
-      <input
-        class="uk-input input-form uk-form-width-medium uk-form-large"
-        type="number"
-        min="0"
-        v-model="formattedCDP"
-        @input="inputCDP"
-      />
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+          <span>CDP#</span>
+        </a>
+        <select
+          v-model="cdp"
+          aria-label="Custom controls"
+          class="form-button uk-form-width-medium uk-form-large"
+          @change="changeCDP"
+        >
+          <option value="">Please select...</option>
+          <option value="0">CDP #0</option>
+          <option value="1">CDP #1</option>
+          <option value="2">CDP #2</option>
+          <option value="3">CDP #3</option>
+        </select>
+        <button
+          class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
+          type="button"
+          tabindex="-1"
+          style="max-width: 100%"
+        >
+          <span></span>
+          <span
+            uk-icon="icon: chevron-down"
+            style="float: right; position: relative; right: 95px; top: 17px"
+          ></span>
+        </button>
+      </div>
     </div>
     <div class="wrap">
       <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
