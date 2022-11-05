@@ -2,7 +2,7 @@
  * Declarations
  */
 import { DECIMAL, FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract, expectedRedeemAmountWithLtv_contract, withdrawAmountToLTV_contract, balanceOf_contract } from "./contract_request.js"
+import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, currentLTV_contract, expectedRedeemAmountToLtv_contract, withdrawAmountToLTV_contract, balanceOf_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
 const binanceRPCUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545';
@@ -154,10 +154,9 @@ async function openAndDepositAndBorrow(depositAmount, borrowAmount) {
     return response;
 }
 
-async function redeem(cdpID, repayAmount, ltv) {
+async function redeem(cdpID, repayAmount, withdrawAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '' || getAccount() === '') return 0;
-    let withdrawAmount = await withdrawAmountToLTV_contract(_contract, cdpID, ltv, 0); // deptAmount = 0
     let response = await RepayAndWithdraw_contract(_contract, getAccount(), cdpID, repayAmount, withdrawAmount);
     return response;
 }
@@ -180,21 +179,21 @@ async function getAllowance(contractName) {
 async function getShareAmount(cdpID, collateralAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await requiredShareAmountFromCollateralWithLtv_contract(_contract, cdpID, collateralAmount, ltv);
+    let response = await requiredShareAmountFromCollateralToLtv_contract(_contract, cdpID, collateralAmount, ltv);
     return BigInt(response);
 }
 
 async function getDebtAmount(cdpID, shareAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await requiredCollateralAmountFromShareWithLtv_contract(_contract, cdpID, shareAmount, ltv);
+    let response = await requiredCollateralAmountFromShareToLtv_contract(_contract, cdpID, shareAmount, ltv);
     return BigInt(response);
 }
 
 async function getMintAmount(cdpID, collateralAmount, ltv, shareAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await expectedMintAmountWithLtv_contract(_contract, cdpID, collateralAmount, ltv, shareAmount);
+    let response = await expectedMintAmountToLtv_contract(_contract, cdpID, collateralAmount, ltv, shareAmount);
     return BigInt(response);
 }
 
@@ -208,7 +207,7 @@ async function getCurrentLTVFromCDP(cdpID) {
 async function getRedeemAmount(cdpID, stableAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await expectedRedeemAmountWithLtv_contract(_contract, cdpID, stableAmount, ltv);
+    let response = await expectedRedeemAmountToLtv_contract(_contract, cdpID, stableAmount, ltv);
     return response;
 }
 

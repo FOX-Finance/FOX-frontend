@@ -75,10 +75,23 @@ a:hover {
 
 .input-form-icon {
     background: rgba(255, 255, 255, 0.5);
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
 }
 
 .form-button {
     border-radius: 25px;
+}
+
+.uk-card {
+    padding: 30px;
+}
+
+.uk-card-default {
+    border-radius: 25px;
+    opacity: 0.7;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 .icon-circle {

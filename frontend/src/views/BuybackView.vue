@@ -23,14 +23,3 @@ import Recollateralize from "../components/Recollateralize.vue";
     </div>
   </div>
 </template>
-
-<style scoped>
-.uk-card {
-  padding: 30px;
-}
-.uk-card-default {
-  border-radius: 25px;
-  opacity: 0.7;
-  box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
-}
-</style>

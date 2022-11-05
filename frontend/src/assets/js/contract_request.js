@@ -30,26 +30,26 @@ async function allowance_contract(_contract, _account, _address) {
     return response;
 }
 
-async function requiredShareAmountFromCollateralWithLtv_contract(_contract, _id, _collateralAmount, _ltv) {
-    console.log("-- [request] requiredShareAmountFromCollateralWithLtv");
+async function requiredShareAmountFromCollateralToLtv_contract(_contract, _id, _collateralAmount, _ltv) {
+    console.log("-- [request] requiredShareAmountFromCollateralToLtv");
     console.log("_collateralAmount", _collateralAmount)
     console.log("_ltv", _ltv)
-    let response = await _contract.methods.requiredShareAmountFromCollateralWithLtv(_id, _collateralAmount, _ltv).call();
-    console.log("-- [response] requiredShareAmountFromCollateralWithLtv :", response);
+    let response = await _contract.methods.requiredShareAmountFromCollateralToLtv(_id, _collateralAmount, _ltv).call();
+    console.log("-- [response] requiredShareAmountFromCollateralToLtv :", response);
     return response;
 }
 
-async function requiredCollateralAmountFromShareWithLtv_contract(_contract, _id, _shareAmount, _ltv) {
-    console.log("-- [request] requiredCollateralAmountFromShareWithLtv");
-    let response = await _contract.methods.requiredCollateralAmountFromShareWithLtv(_id, _shareAmount, _ltv).call();
-    console.log("-- [response] requiredCollateralAmountFromShareWithLtv :", response);
+async function requiredCollateralAmountFromShareToLtv_contract(_contract, _id, _shareAmount, _ltv) {
+    console.log("-- [request] requiredCollateralAmountFromShareToLtv");
+    let response = await _contract.methods.requiredCollateralAmountFromShareToLtv(_id, _shareAmount, _ltv).call();
+    console.log("-- [response] requiredCollateralAmountFromShareToLtv :", response);
     return response;
 }
 
-async function expectedMintAmountWithLtv_contract(_contract, _id, _collateralAmount, _ltv, _shareAmount) {
-    console.log("-- [request] expectedMintAmountWithLtv");
-    let response = await _contract.methods.expectedMintAmountWithLtv(_id, _collateralAmount, _ltv, _shareAmount).call();
-    console.log("-- [response] expectedMintAmountWithLtv :", response);
+async function expectedMintAmountToLtv_contract(_contract, _id, _collateralAmount, _ltv, _shareAmount) {
+    console.log("-- [request] expectedMintAmountToLtv");
+    let response = await _contract.methods.expectedMintAmountToLtv(_id, _collateralAmount, _ltv, _shareAmount).call();
+    console.log("-- [response] expectedMintAmountToLtv :", response);
     return response;
 }
 
@@ -60,10 +60,10 @@ async function currentLTV_contract(_contract, _id) {
     return response;
 }
 
-async function expectedRedeemAmountWithLtv_contract(_contract, _id, _stableAmount, _ltv) {
-    console.log("-- [request] expectedRedeemAmountWithLtv");
-    let response = await _contract.methods.expectedRedeemAmountWithLtv(_id, _stableAmount, _ltv).call();
-    console.log("-- [response] expectedRedeemAmountWithLtv :", response);
+async function expectedRedeemAmountToLtv_contract(_contract, _id, _stableAmount, _ltv) {
+    console.log("-- [request] expectedRedeemAmountToLtv");
+    let response = await _contract.methods.expectedRedeemAmountToLtv(_id, _stableAmount, _ltv).call();
+    console.log("-- [response] expectedRedeemAmountToLtv :", response);
     return response;
 }
 
@@ -79,4 +79,4 @@ async function balanceOf_contract(_contract, _account) {
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract, expectedRedeemAmountWithLtv_contract, withdrawAmountToLTV_contract, balanceOf_contract };
+export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, currentLTV_contract, expectedRedeemAmountToLtv_contract, withdrawAmountToLTV_contract, balanceOf_contract };

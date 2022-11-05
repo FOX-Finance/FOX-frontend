@@ -111,7 +111,7 @@ export default {
     },
     redeemOnClick: function () {
       this.emitter.emit("loading-event", true);
-      redeem(this.cdp, this.fox, this.ltv).then((result) => {
+      redeem(this.cdp, this.fox, this.weth).then((result) => {
         this.emitter.emit("loading-event", false);
         if (result) console.log("redeem success!");
         else console.log("redeem failed!");
