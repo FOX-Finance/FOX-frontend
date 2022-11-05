@@ -1,6 +1,7 @@
 <script>
 import {
   connectMetamask,
+  addTokenToMetamask,
   getAccount,
   getBalance,
 } from "../assets/js/interface_request.js";
@@ -95,6 +96,9 @@ export default {
       });
       console.log("UpdateBalance!");
     },
+    addToken: function (tokenName) {
+      addTokenToMetamask(tokenName);
+    }
   },
 };
 </script>
@@ -107,17 +111,17 @@ export default {
       }}</span>
     </button>
     <div class="uk-text-center wrap-top" uk-grid>
-      <button class="uk-width-1-3 uk-button balance-button" @click="updateBalance">
+      <button class="uk-width-1-3 uk-button balance-button" @click="addToken('WETH')">
         <span style="display: block; overflow: hidden; text-overflow: ellipsis">
           <img src="../img/bnb-icon.png" style="width: 20px" /> {{ formattedWETH }}</span
         >
       </button>
-      <button class="uk-width-1-3 uk-button balance-button" @click="updateBalance">
+      <button class="uk-width-1-3 uk-button balance-button" @click="addToken('FOXS')">
         <span style="display: block; overflow: hidden; text-overflow: ellipsis">
           <img src="../img/foxs-icon.png" style="width: 20px" /> {{ formattedFOXS }}</span
         >
       </button>
-      <button class="uk-width-1-3 uk-button balance-button" @click="updateBalance">
+      <button class="uk-width-1-3 uk-button balance-button" @click="addToken('FOX')">
         <span style="display: block; overflow: hidden; text-overflow: ellipsis">
           <img src="../img/fox-icon.png" style="width: 20px" /> {{ formattedFOX }}</span
         >

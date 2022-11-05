@@ -1,7 +1,7 @@
 /*
  * Declarations
  */
-import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
+import { DECIMAL, FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
 import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralWithLtv_contract, requiredCollateralAmountFromShareWithLtv_contract, expectedMintAmountWithLtv_contract, currentLTV_contract, expectedRedeemAmountWithLtv_contract, withdrawAmountToLTV_contract, balanceOf_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
@@ -78,6 +78,39 @@ async function connectMetamask() {
     return false;
 }
 
+async function addTokenToMetamask(tokenName) {
+    const tokenContract = getContract(tokenName);
+    const symbol = await tokenContract.methods.symbol().call();
+    const decimals = await tokenContract.methods.decimals().call();
+    const tokenImage = getContractImg(tokenName);
+
+    const provider = window.ethereum;
+    if (provider) {
+        try {
+            // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+            const wasAdded = await provider.request({
+                method: 'wallet_watchAsset',
+                params: {
+                    type: 'ERC20',
+                    options: {
+                      address: tokenContract._address,
+                      symbol: symbol,
+                      decimals: decimals,
+                      image: tokenImage,
+                    },
+                  },
+            });
+            if (wasAdded) {
+                console.log('Thanks for your interest!');
+            } else {
+                console.log('Your loss!');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
+
 function getAccount() {
     return account;
 }
@@ -88,6 +121,12 @@ function getContract(contractName) {
     else if (contractName === "WETH") return contract_weth;
     else if (contractName === "FOXS") return contract_foxs;
     else if (contractName === "SIN") return contract_sin;
+}
+
+function getContractImg(contractName) {
+    if (contractName === "WETH") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/bnb-icon.png?raw=true';
+    else if (contractName === "FOXS") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/foxs-icon.png?raw=true';
+    else if (contractName === "FOX") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/fox-icon.png?raw=true';
 }
 
 function getApproveAddress(contractName) {
@@ -173,4 +212,4 @@ async function getRedeemAmount(stableAmount, ltv) {
     return response;
 }
 
-export { connectContract, connectMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getCurrentLTVFromCDP, getRedeemAmount };
+export { connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getCurrentLTVFromCDP, getRedeemAmount };
