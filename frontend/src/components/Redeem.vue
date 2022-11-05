@@ -124,7 +124,7 @@ export default {
       });
     },
     inputFOX: function () {
-      getRedeemAmount(this.fox, this.ltv).then((result) => {
+      getRedeemAmount(this.cdp, this.fox, this.ltv).then((result) => {
         console.log("RESULT!", result[0]);
         this.weth = BigInt(result[0]);
         this.foxs = BigInt(result[1]);

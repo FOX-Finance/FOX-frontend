@@ -157,7 +157,7 @@ async function openAndDepositAndBorrow(depositAmount, borrowAmount) {
 async function redeem(cdpID, repayAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '' || getAccount() === '') return 0;
-    let withdrawAmount = await withdrawAmountToLTV_contract(_contract, cdpID, ltv);
+    let withdrawAmount = await withdrawAmountToLTV_contract(_contract, cdpID, ltv, 0); // deptAmount = 0
     let response = await RepayAndWithdraw_contract(_contract, getAccount(), cdpID, repayAmount, withdrawAmount);
     return response;
 }
@@ -205,10 +205,10 @@ async function getCurrentLTVFromCDP(cdpID) {
     return response;
 }
 
-async function getRedeemAmount(stableAmount, ltv) {
+async function getRedeemAmount(cdpID, stableAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await expectedRedeemAmountWithLtv_contract(_contract, stableAmount, ltv);
+    let response = await expectedRedeemAmountWithLtv_contract(_contract, cdpID, stableAmount, ltv);
     return response;
 }
 

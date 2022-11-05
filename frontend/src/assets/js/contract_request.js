@@ -60,18 +60,16 @@ async function currentLTV_contract(_contract, _id) {
     return response;
 }
 
-async function expectedRedeemAmountWithLtv_contract(_contract, _stableAmount, _ltv) {
+async function expectedRedeemAmountWithLtv_contract(_contract, _id, _stableAmount, _ltv) {
     console.log("-- [request] expectedRedeemAmountWithLtv");
-    let response = await _contract.methods.expectedRedeemAmountWithLtv(_stableAmount, _ltv).call();
+    let response = await _contract.methods.expectedRedeemAmountWithLtv(_id, _stableAmount, _ltv).call();
     console.log("-- [response] expectedRedeemAmountWithLtv :", response);
     return response;
 }
 
-async function withdrawAmountToLTV_contract(_contract, _id, _multipliedLtv) {
-    console.log("-- [request] withdrawAmountToLTV", _id);
-    console.log("_id", _id)
-    console.log("_multipliedLtv", _multipliedLtv)
-    let response = await _contract.methods.withdrawAmountToLTV(_id, _multipliedLtv).call();
+async function withdrawAmountToLTV_contract(_contract, _id, _multipliedLtv, _deptAmount) {
+    console.log("-- [request] withdrawAmountToLTV");
+    let response = await _contract.methods.withdrawAmountToLTV(_id, _multipliedLtv, _deptAmount).call();
     console.log("-- [response] withdrawAmountToLTV :", response);
     return response;
 }
