@@ -117,8 +117,9 @@ export default {
         >
       </button>
       <button class="uk-width-1-3 uk-button balance-button" @click="addToken('FOXS')">
-        <span style="display: block; overflow: hidden; text-overflow: ellipsis">
-          <img src="../img/foxs-icon.png" style="width: 20px" /> {{ formattedFOXS }}</span
+        <span class="balance-text">
+          <img src="../img/foxs-icon.png" style="width: 20px" />
+          {{ formattedFOXS }}</span
         >
       </button>
       <button class="uk-width-1-3 uk-button balance-button" @click="addToken('FOX')">
@@ -145,5 +146,14 @@ export default {
 
 .balance-button {
   max-height: 40px;
+  overflow: hidden;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.balance-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
