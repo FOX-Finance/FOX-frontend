@@ -22,6 +22,13 @@ async function RepayAndWithdraw_contract(_contract, _account, _id, _repayAmount,
     return response;
 }
 
+async function buybackRepayDebt_contract(_contract, _account, _id, _shareAmount) {
+    console.log("-- [request] buybackRepayDebt");
+    let response = await _contract.methods.buybackRepayDebt(_id, _shareAmount).send({ from: _account });
+    console.log("-- [response] buybackRepayDebt :", response);
+    return response;
+}
+
 /* Call */
 async function allowance_contract(_contract, _account, _address) {
     console.log("-- [request] allowance");
@@ -67,16 +74,19 @@ async function expectedRedeemAmountToLtv_contract(_contract, _id, _stableAmount,
     return response;
 }
 
-async function withdrawAmountToLTV_contract(_contract, _id, _multipliedLtv, _deptAmount) {
-    console.log("-- [request] withdrawAmountToLTV");
-    let response = await _contract.methods.withdrawAmountToLTV(_id, _multipliedLtv, _deptAmount).call();
-    console.log("-- [response] withdrawAmountToLTV :", response);
-    return response;
-}
-
 async function balanceOf_contract(_contract, _account) {
     let response = await _contract.methods.balanceOf(_account).call();
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, currentLTV_contract, expectedRedeemAmountToLtv_contract, withdrawAmountToLTV_contract, balanceOf_contract };
+async function exchangedCollateralAmountFromShareToLtv_contract(_contract, _id, _shareAmount, _ltv) {
+    console.log("-- [request] exchangedCollateralAmountFromShareToLtv");
+    console.log("_id", _id)
+    console.log("_shareAmount", _shareAmount)
+    console.log("_ltv", _ltv)
+    let response = await _contract.methods.exchangedCollateralAmountFromShareToLtv(_id, _shareAmount, _ltv).call();
+    console.log("-- [response] exchangedCollateralAmountFromShareToLtv :", response);
+    return response;
+}
+
+export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, currentLTV_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract };
