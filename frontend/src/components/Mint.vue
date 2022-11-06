@@ -9,6 +9,8 @@ import {
   getDebtAmount,
   getMintAmount,
   getCurrentLTVFromCDP,
+  getBalance,
+  getLtvRangeWhenMint,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
 
@@ -19,19 +21,19 @@ export default {
       approval_weth: false,
       approval_foxs: false,
 
-      cdp: '',
-      bnb: '',
-      ltv: '',
-      foxs: '',
-      mint: '',
+      cdp: "",
+      bnb: "",
+      ltv: "",
+      foxs: "",
+      mint: "",
     };
   },
   computed: {
     formattedBNB: {
       get() {
-        if (this.bnb === '') return '';
+        if (this.bnb === "") return "";
         let result = Number(this.bnb / DECIMAL10);
-        return (result / PRECISION).toString();
+        return result / PRECISION;
       },
       set(value) {
         this.bnb = BigInt(value * DECIMAL);
@@ -39,8 +41,8 @@ export default {
     },
     formattedLTV: {
       get() {
-        if (this.ltv === '') return '';
-        return (this.ltv / 100).toString();
+        if (this.ltv === "") return "";
+        return this.ltv / 100;
       },
       set(value) {
         this.ltv = value * 100;
@@ -48,9 +50,9 @@ export default {
     },
     formattedFOXS: {
       get() {
-        if (this.foxs === '') return '';
+        if (this.foxs === "") return "";
         let result = Number(this.foxs / DECIMAL10);
-        return (result / PRECISION).toString();
+        return result / PRECISION;
       },
       set(value) {
         this.foxs = BigInt(value * DECIMAL);
@@ -58,9 +60,9 @@ export default {
     },
     formattedMINT: {
       get() {
-        if (this.mint === '') return '';
+        if (this.mint === "") return "";
         let result = Number(this.mint / DECIMAL10);
-        return (result / PRECISION).toString();
+        return result / PRECISION;
       },
       set(value) {
         this.mint = BigInt(value * DECIMAL);
@@ -138,15 +140,26 @@ export default {
         this.ltv = result;
       });
     },
-    inputBNB: function () {
-      getShareAmount(this.cdp, this.bnb, this.ltv).then((result) => {
-        this.foxs = result;
-        getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
-          this.mint = mintResult;
+    inputBNB: function (event) {
+      getBalance("WETH").then((currentBNB) => {
+        let bWrongRange =
+          (event !== undefined && parseInt(event.target.value) < 0) ||
+          this.bnb > currentBNB;
+        // TODO: bWorngRange => notify
+        // ..
+
+        getShareAmount(this.cdp, this.bnb, this.ltv).then((result) => {
+          this.foxs = result;
+          getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
+            this.mint = mintResult;
+          });
         });
       });
     },
     inputFOXS: function () {
+      // TODO: bWorngRange => notify
+      // ..
+
       getDebtAmount(this.cdp, this.foxs, this.ltv).then((result) => {
         this.bnb = result;
         getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
@@ -154,8 +167,23 @@ export default {
         });
       });
     },
-    inputLTV: function () {
-      this.inputBNB();
+    inputLTV: function (event) {
+      if (event !== undefined && parseInt(event.target.value) < 0) {
+        event.target.value = 0;
+      }
+
+      getLtvRangeWhenMint(this.cdp, this.bnb).then((ltvRange) => {
+        let upperBound = parseInt(ltvRange.upperBound_); // should be <=
+        let lowerBound = parseInt(ltvRange.lowerBound_); // should be >
+        let bWrongRange =
+          (event !== undefined && parseInt(event.target.value) < 0) ||
+          this.ltv > upperBound ||
+          this.ltv <= lowerBound;
+        // TODO: bWorngRange => notify
+        // ..
+
+        this.inputBNB();
+      });
     },
   },
 };
@@ -209,8 +237,9 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
+        min="0"
         v-model="formattedBNB"
-        @input="inputBNB"
+        @input="inputBNB($event)"
       />
     </div>
     <div class="wrap">
@@ -221,8 +250,9 @@ export default {
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
           type="number"
+          min="0"
           v-model="formattedLTV"
-          @input="inputLTV"
+          @input="inputLTV($event)"
         />
       </div>
     </div>

@@ -30,7 +30,7 @@
     </div>
     <div class="uk-inline form-icon">
       <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-        ><img src="../img/sin-icon.png" style="width: 20px" /><span>SIN</span></a
+        ><img src="../img/sin-icon.png" style="width: 20px" /><span>NIS</span></a
       >
       <input
         readonly

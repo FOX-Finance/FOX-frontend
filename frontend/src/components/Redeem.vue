@@ -7,6 +7,7 @@ import {
   getCurrentLTVFromCDP,
   getRedeemAmount,
   redeem,
+  getBalance,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
 
@@ -16,7 +17,7 @@ export default {
       connected: false,
       approval_fox: false,
 
-      cdp: '',
+      cdp: "",
       fox: "",
       weth: "",
       ltv: "",
@@ -28,7 +29,7 @@ export default {
       get() {
         if (this.fox === "") return "";
         let result = Number(this.fox / DECIMAL10);
-        return (result / PRECISION).toString();
+        return result / PRECISION;
       },
       set(value) {
         this.fox = BigInt(value * DECIMAL);
@@ -38,7 +39,7 @@ export default {
       get() {
         if (this.weth === "") return "";
         let result = Number(this.weth / DECIMAL10);
-        return (result / PRECISION).toString();
+        return result / PRECISION;
       },
       set(value) {
         this.weth = BigInt(value * DECIMAL);
@@ -47,7 +48,7 @@ export default {
     formattedLTV: {
       get() {
         if (this.ltv === "") return "";
-        return (this.ltv / 100).toString();
+        return this.ltv / 100;
       },
       set(value) {
         this.ltv = Math.round(value * 100);
@@ -57,7 +58,7 @@ export default {
       get() {
         if (this.foxs === "") return "";
         let result = Number(this.foxs / DECIMAL10);
-        return (result / PRECISION).toString();
+        return result / PRECISION;
       },
       set(value) {
         this.foxs = BigInt(value * DECIMAL);
@@ -123,11 +124,19 @@ export default {
         this.ltv = result;
       });
     },
-    inputFOX: function () {
-      getRedeemAmount(this.cdp, this.fox, this.ltv).then((result) => {
-        console.log("RESULT!", result[0]);
-        this.weth = BigInt(result[0]);
-        this.foxs = BigInt(result[1]);
+    inputFOX: function (event) {
+      getBalance("FOX").then((currentFOX) => {
+        let bWrongRange =
+          (event !== undefined && parseInt(event.target.value) < 0) ||
+          this.fox > currentFOX;
+        // TODO: bWorngRange => notify
+        // ..
+
+        getRedeemAmount(this.cdp, this.fox, this.ltv).then((result) => {
+          console.log("RESULT!", result[0]);
+          this.weth = BigInt(result[0]);
+          this.foxs = BigInt(result[1]);
+        });
       });
     },
     inputLTV: function () {
@@ -184,8 +193,9 @@ export default {
       <input
         class="uk-input input-form uk-form-width-medium uk-form-large"
         type="number"
+        min="0"
         v-model="formattedFOX"
-        @input="inputFOX"
+        @input="inputFOX($event)"
       />
     </div>
     <div class="wrap">

@@ -7,6 +7,7 @@ import {
   getCurrentLTVFromCDP,
   getCollateralAmount,
   buyback,
+  getBalance,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
 
@@ -28,7 +29,7 @@ export default {
       get() {
         if (this.foxs === "") return "";
         let result = Number(this.foxs / DECIMAL10);
-        return (result / PRECISION).toString();
+        return result / PRECISION;
       },
       set(value) {
         this.foxs = BigInt(value * DECIMAL);
@@ -38,7 +39,7 @@ export default {
       get() {
         if (this.weth === "") return "";
         let result = Number(this.weth / DECIMAL10);
-        return (result / PRECISION).toString();
+        return result / PRECISION;
       },
       set(value) {
         this.weth = BigInt(value * DECIMAL);
@@ -47,7 +48,7 @@ export default {
     formattedLTV: {
       get() {
         if (this.ltv === "") return "";
-        return (this.ltv / 100).toString();
+        return this.ltv / 100;
       },
       set(value) {
         this.ltv = value * 100;

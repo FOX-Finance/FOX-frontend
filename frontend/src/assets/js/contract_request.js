@@ -81,12 +81,39 @@ async function balanceOf_contract(_contract, _account) {
 
 async function exchangedCollateralAmountFromShareToLtv_contract(_contract, _id, _shareAmount, _ltv) {
     console.log("-- [request] exchangedCollateralAmountFromShareToLtv");
-    console.log("_id", _id)
-    console.log("_shareAmount", _shareAmount)
-    console.log("_ltv", _ltv)
     let response = await _contract.methods.exchangedCollateralAmountFromShareToLtv(_id, _shareAmount, _ltv).call();
     console.log("-- [response] exchangedCollateralAmountFromShareToLtv :", response);
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, currentLTV_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract };
+/* range */
+
+async function ltvRangeWhenMint_contract(_contract, _id, _collateralAmount) {
+    console.log("-- [request] ltvRangeWhenMint");
+    let response = await _contract.methods.ltvRangeWhenMint(_id, _collateralAmount).call();
+    console.log("-- [response] ltvRangeWhenMint :", response);
+    return response;
+}
+
+async function ltvRangeWhenRedeem_contract(_contract, _id, _collectedStableAmount) {
+    console.log("-- [request] ltvRangeWhenRedeem");
+    let response = await _contract.methods.ltvRangeWhenRedeem(_id, _collectedStableAmount).call();
+    console.log("-- [response] ltvRangeWhenRedeem :", response);
+    return response;
+}
+
+async function ltvRangeWhenBuyback_contract(_contract, _id, _shareAmount) {
+    console.log("-- [request] ltvRangeWhenBuyback");
+    let response = await _contract.methods.ltvRangeWhenBuyback(_id, _shareAmount).call();
+    console.log("-- [response] ltvRangeWhenBuyback :", response);
+    return response;
+}
+
+async function shareAmountRangeWhenBuyback_contract(_contract, _id, _shareAmount) {
+    console.log("-- [request] shareAmountRangeWhenBuyback");
+    let response = await _contract.methods.shareAmountRangeWhenBuyback(_id, _shareAmount).call();
+    console.log("-- [response] shareAmountRangeWhenBuyback :", response);
+    return response;
+}
+
+export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, currentLTV_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, ltvRangeWhenMint_contract, ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract };
