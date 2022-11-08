@@ -96,10 +96,24 @@ async function exchangedCollateralAmountFromShareToLtv_contract(_contract, _id, 
 
 /* range */
 
-async function ltvRangeWhenMint_contract(_contract, _id, _collateralAmount) {
+async function ltvRangeWhenMint_contract(_contract, _id, _collateralAmount, _shareAmount) {
     console.log("-- [request] ltvRangeWhenMint");
-    let response = await _contract.methods.ltvRangeWhenMint(_id, _collateralAmount).call();
+    let response = await _contract.methods.ltvRangeWhenMint(_id, _collateralAmount, _shareAmount).call();
     console.log("-- [response] ltvRangeWhenMint :", response);
+    return response;
+}
+
+async function shareAmountRangeWhenMint_contract(_contract, _account, _id, _collateralAmount, _ltv) {
+    console.log("-- [request] shareAmountRangeWhenMint");
+    let response = await _contract.methods.shareAmountRangeWhenMint(_account, _id, _collateralAmount, _ltv).call();
+    console.log("-- [response] shareAmountRangeWhenMint :", response);
+    return response;
+}
+
+async function collateralAmountRangeWhenMint_contract(_contract, _account, _id, _ltv, _shareAmount) {
+    console.log("-- [request] collateralAmountRangeWhenMint");
+    let response = await _contract.methods.collateralAmountRangeWhenMint(_account, _id, _ltv, _shareAmount).call();
+    console.log("-- [response] collateralAmountRangeWhenMint :", response);
     return response;
 }
 
@@ -124,4 +138,4 @@ async function shareAmountRangeWhenBuyback_contract(_contract, _id, _shareAmount
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, ltvRangeWhenMint_contract, ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract };
+export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract };

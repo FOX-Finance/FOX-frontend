@@ -12,6 +12,8 @@ import {
   getdefaultValuesMint,
   getBalance,
   getLtvRangeWhenMint,
+  getFoxsRangeWhenMint,
+  getWethRangeWhenMint,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
 
@@ -27,6 +29,11 @@ export default {
       ltv: "",
       foxs: "",
       mint: "",
+
+      bWethWrongRange: false,
+      bLtvWrongRange: false,
+      bFoxsWrongRange: false,
+
       ETHERS_MAX: ETHERS_MAX,
     };
   },
@@ -43,11 +50,17 @@ export default {
     },
     formattedLTV: {
       get() {
+        console.log("LTV GET : ", this.ltv);
         if (this.ltv === "") return "";
         return this.ltv / 100;
       },
       set(value) {
-        this.ltv = value * 100;
+        // LTV cut
+        var regexp = /^\d*(\.\d{0,2})?$/;
+        if (value.toString().search(regexp) == -1) {
+          value = this.ltv / 100;
+        }
+        this.ltv = +(value * 100).toFixed(2);
       },
     },
     formattedFOXS: {
@@ -137,57 +150,77 @@ export default {
       });
     },
     changeCDP: function () {
-      console.log("cdp:",this.cdp)
+      console.log("cdp:", this.cdp);
       getdefaultValuesMint(this.cdp).then((result) => {
-        this.bnb = BigInt(result.collateralAmount_)
-        this.ltv = result.ltv_
-        this.foxs = BigInt(result.shareAmount_)
-        this.fox = BigInt(result.stableAmount_)
+        this.bnb = BigInt(result.collateralAmount_);
+        this.ltv = result.ltv_;
+        this.foxs = BigInt(result.shareAmount_);
+        this.fox = BigInt(result.stableAmount_);
       });
     },
-    inputBNB: function (event) {
-      getBalance("WETH").then((currentBNB) => {
-        let bWrongRange =
-          (event !== undefined && parseInt(event.target.value) < 0) ||
-          this.bnb > currentBNB;
-        // TODO: bWorngRange => notify
-        // ..
-
-        getShareAmount(this.cdp, this.bnb, this.ltv).then((result) => {
-          this.foxs = result;
-          getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
-            this.mint = mintResult;
-          });
+    inputBNB: async function (event) {
+      // 1. update foxs, fox
+      this.updateFoxsAndFox().then((result) => {
+        this.checkRange(event);
+      });
+    },
+    inputFOXS: async function (event) {
+      // 1. update weth, fox
+      this.updateWethAndFox().then((result) => {
+        this.checkRange(event);
+      });
+    },
+    inputLTV: async function (event) {
+      this.inputBNB(event);
+    },
+    updateFoxsAndFox: async function () {
+      return getShareAmount(this.cdp, this.bnb, this.ltv).then((result) => {
+        this.foxs = result;
+        getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
+          this.mint = mintResult;
         });
       });
     },
-    inputFOXS: function () {
-      // TODO: bWorngRange => notify
-      // ..
-
-      getDebtAmount(this.cdp, this.foxs, this.ltv).then((result) => {
+    updateWethAndFox: async function () {
+      return getDebtAmount(this.cdp, this.foxs, this.ltv).then((result) => {
         this.bnb = result;
         getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
           this.mint = mintResult;
         });
       });
     },
-    inputLTV: function (event) {
-      if (event !== undefined && parseInt(event.target.value) < 0) {
-        event.target.value = 0;
-      }
-
-      getLtvRangeWhenMint(this.cdp, this.bnb).then((ltvRange) => {
-        let upperBound = parseInt(ltvRange.upperBound_); // should be <=
-        let lowerBound = parseInt(ltvRange.lowerBound_); // should be >
-        let bWrongRange =
+    checkRange: async function (event) {
+      // ltv range check
+      console.log("Range Check CDP:", this.cdp, "weth : ", this.bnb, "foxs:", this.foxs);
+      getLtvRangeWhenMint(this.cdp, this.bnb, this.foxs).then((ltvRange) => {
+        let upperBound = BigInt(ltvRange.upperBound_); // should be <=
+        let lowerBound = BigInt(ltvRange.lowerBound_); // should be >
+        this.bLtvWrongRange =
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.ltv > upperBound ||
-          this.ltv <= lowerBound;
-        // TODO: bWorngRange => notify
-        // ..
+          this.ltv < lowerBound;
+        console.log(this.bLtvWrongRange, "LTV RANGE!!! ", upperBound, lowerBound);
+      });
 
-        this.inputBNB();
+      // Foxs range check
+      getFoxsRangeWhenMint(this.cdp, this.bnb, this.ltv).then((foxsRange) => {
+        let upperBound = BigInt(foxsRange.upperBound_);
+        let lowerBound = BigInt(foxsRange.lowerBound_);
+        this.bFoxsWrongRange =
+          (event !== undefined && parseInt(event.target.value) < 0) ||
+          this.foxs > upperBound ||
+          this.foxs < lowerBound;
+      });
+
+      // Weth range check
+      getWethRangeWhenMint(this.cdp, this.ltv, this.foxs).then((wethRange) => {
+        let upperBound = BigInt(wethRange.upperBound_);
+        let lowerBound = BigInt(wethRange.lowerBound_);
+        this.bWethWrongRange =
+          (event !== undefined && parseInt(event.target.value) < 0) ||
+          this.bnb > upperBound ||
+          this.bnb < lowerBound;
+        console.log(this.bWethWrongRange, "WETH RANGE!!! ", upperBound, lowerBound);
       });
     },
   },
@@ -250,6 +283,7 @@ export default {
         </a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
+          :class="{ wrong: bWethWrongRange }"
           type="number"
           min="0"
           v-model="formattedBNB"
@@ -264,6 +298,7 @@ export default {
           >
           <input
             class="uk-input input-form uk-form-width-medium uk-form-large"
+            :class="{ wrong: bLtvWrongRange }"
             type="number"
             min="0"
             v-model="formattedLTV"
@@ -285,9 +320,10 @@ export default {
         </a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
+          :class="{ wrong: bFoxsWrongRange }"
           type="number"
           v-model="formattedFOXS"
-          @input="inputFOXS"
+          @input="inputFOXS($event)"
           :disabled="cdp === ''"
         />
       </div>
@@ -360,5 +396,9 @@ select {
   text-align: left;
   -ms-text-align-last: left;
   -moz-text-align-last: left;
+}
+
+.wrong {
+  border-color: red !important;
 }
 </style>
