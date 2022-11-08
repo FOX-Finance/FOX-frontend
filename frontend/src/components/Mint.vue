@@ -175,6 +175,36 @@ export default {
       this.fox = ethers.BigNumber.from(bigint_);
       this.fox_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
     },
+    updateMaxWethOnClick: async function () {
+      this.updateMaxWETH().then((result) => {
+        this.inputWETH();
+      });
+    },
+    updateMaxLtvOnClick: async function () {
+      this.updateMaxLTV().then((result) => {
+        this.inputLTV();
+      });
+    },
+    updateMaxFoxsOnClick: async function () {
+      this.updateMaxFOXS().then((result) => {
+        this.inputFOXS();
+      });
+    },
+    updateMaxWETH: async function () {
+      return getWethRangeWhenMint(this.cdp, this.ltv, this.foxs).then((wethRange) => {
+        this.setWETH(wethRange.upperBound_);
+      });
+    },
+    updateMaxLTV: async function () {
+      return getLtvRangeWhenMint(this.cdp, this.weth, this.foxs).then((ltvRange) => {
+        this.ltv = ltvRange.upperBound_;
+      });
+    },
+    updateMaxFOXS: async function () {
+      return getFoxsRangeWhenMint(this.cdp, this.weth, this.ltv).then((foxsRange) => {
+        this.setFOXS(foxsRange.upperBound_);
+      });
+    },
     inputWETH: async function (event) {
       this.updateFoxsAndFox().then((result) => {
         this.checkRange(event);
@@ -225,6 +255,7 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.foxs.gt(upperBound) ||
           this.foxs.gt(lowerBound);
+          console.log(this.bLtvWrongRange, "FOXS RANGE!!! ", upperBound, lowerBound);
       });
 
       // Weth range check
@@ -258,7 +289,7 @@ export default {
           uk-form-custom="target: > button > span:first-child"
           style="padding-left: 0px; padding-right: 0px"
         >
-          <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+          <a class="uk-form-icon uk-form-icon-flip input-form-icon">
             <span>CDP#</span>
           </a>
           <select
@@ -294,7 +325,7 @@ export default {
         <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
       </div>
       <div class="uk-inline form-icon">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon" @click="updateMaxWethOnClick()"
           ><img src="../img/bnb-icon.png" style="width: 20px" /><span>WETH</span>
         </a>
         <input
@@ -309,7 +340,7 @@ export default {
       </div>
       <div class="wrap">
         <div class="uk-inline">
-          <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+          <a class="uk-form-icon uk-form-icon-flip input-form-icon" @click="updateMaxLtvOnClick()"
             ><span>LTV(%)</span></a
           >
           <input
@@ -330,7 +361,7 @@ export default {
         <span class="icon-circle" uk-icon="plus"></span>
       </div>
       <div class="uk-inline form-icon">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon" @click="updateMaxFoxsOnClick()">
           <img src="../img/foxs-icon.png" style="width: 20px" />
           <span>FOXS</span>
         </a>
@@ -347,7 +378,7 @@ export default {
         <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
       </div>
       <div class="uk-inline form-icon">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon">
           <img src="../img/fox-icon.png" style="width: 20px" />
           <span>FOX</span>
         </a>
