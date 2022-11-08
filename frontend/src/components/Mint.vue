@@ -10,14 +10,12 @@ import {
   getDebtAmount,
   getMintAmount,
   getdefaultValuesMint,
-  getBalance,
   getTrustLevel,
   getMaxLTV,
   getLtvRangeWhenMint,
   getFoxsRangeWhenMint,
   getWethRangeWhenMint,
 } from "../assets/js/interface_request.js";
-import { DECIMAL, DECIMAL10, PRECISION, FIXED } from "../assets/js/contract.js";
 import { ethers } from "ethers";
 
 export default {

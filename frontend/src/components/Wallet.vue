@@ -5,7 +5,6 @@ import {
   getAccount,
   getBalance,
 } from "../assets/js/interface_request.js";
-import { DECIMAL, DECIMAL14, PRECISION4 } from "../assets/js/contract.js";
 import { ethers } from "ethers";
 export default {
   data() {
@@ -24,29 +23,26 @@ export default {
   computed: {
     formattedWETH: {
       get() {
-        let result = Number(this.weth / DECIMAL14);
-        return (result / PRECISION4).toString();
+        return ethers.utils.formatEther(this.weth);
       },
       set(value) {
-        this.weth = ethers.BigNumber.from(value * DECIMAL);
+        this.weth = ethers.utils.parseUnits(value, "ether");
       },
     },
     formattedFOXS: {
       get() {
-        let result = Number(this.foxs / DECIMAL14);
-        return (result / PRECISION4).toString();
+        return ethers.utils.formatEther(this.foxs);
       },
       set(value) {
-        this.foxs = ethers.BigNumber.from(value * DECIMAL);
+        this.foxs = ethers.utils.parseUnits(value, "ether");
       },
     },
     formattedFOX: {
       get() {
-        let result = Number(this.fox / DECIMAL14);
-        return (result / PRECISION4).toString();
+        return ethers.utils.formatEther(this.fox);
       },
       set(value) {
-        this.fox = ethers.BigNumber.from(value * DECIMAL);
+        this.fox = ethers.utils.parseUnits(value, "ether");
       },
     },
   },
@@ -99,7 +95,7 @@ export default {
     },
     addToken: function (tokenName) {
       addTokenToMetamask(tokenName);
-    }
+    },
   },
 };
 </script>

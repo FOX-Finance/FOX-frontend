@@ -9,7 +9,6 @@ import {
   redeem,
   getBalance,
 } from "../assets/js/interface_request.js";
-import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
 import { ethers } from "ethers";
 
 export default {
@@ -19,50 +18,60 @@ export default {
       approval_fox: false,
 
       cdp: "",
-      fox: "",
-      weth: "",
-      ltv: "",
-      foxs: "",
+      fox: ethers.BigNumber.from("0"),
+      weth: ethers.BigNumber.from("0"),
+      ltv: 0,
+      foxs: ethers.BigNumber.from("0"),
+
+      fox_format: "",
+      weth_format: "",
+      foxs_format: "",
     };
   },
   computed: {
-    formattedFOX: {
-      get() {
-        if (this.fox === "") return "";
-        let result = Number(this.fox / DECIMAL10);
-        return result / PRECISION;
-      },
-      set(value) {
-        this.fox = ethers.BigNumber.from(value * DECIMAL);
-      },
-    },
     formattedWETH: {
       get() {
-        if (this.weth === "") return "";
-        let result = Number(this.weth / DECIMAL10);
-        return result / PRECISION;
+        if (this.weth_format === "") return "";
+        return this.weth_format;
       },
       set(value) {
-        this.weth = ethers.BigNumber.from(value * DECIMAL);
+        let sValue = value.toString();
+        this.weth_format = sValue;
+        if (sValue === "") sValue = "0";
+        this.weth = ethers.utils.parseUnits(sValue, "ether");
       },
     },
     formattedLTV: {
       get() {
         if (this.ltv === "") return "";
-        return this.ltv / 100;
+        return +(this.ltv / 100).toFixed(2);
       },
       set(value) {
-        this.ltv = Math.round(value * 100);
+        this.ltv = +(+value.toFixed(2) * 100).toFixed(2);
       },
     },
     formattedFOXS: {
       get() {
-        if (this.foxs === "") return "";
-        let result = Number(this.foxs / DECIMAL10);
-        return result / PRECISION;
+        if (this.foxs_format === "") return "";
+        return this.foxs_format;
       },
       set(value) {
-        this.foxs = ethers.BigNumber.from(value * DECIMAL);
+        let sValue = value.toString();
+        this.foxs_format = sValue;
+        if (sValue === "") sValue = "0";
+        this.foxs = ethers.utils.parseUnits(sValue, "ether");
+      },
+    },
+    formattedFOX: {
+      get() {
+        if (this.fox_format === "") return "";
+        return this.fox_format;
+      },
+      set(value) {
+        let sValue = value.toString();
+        this.fox_format = sValue;
+        if (sValue === "") sValue = "0";
+        this.fox = ethers.utils.parseUnits(sValue, "ether");
       },
     },
   },
