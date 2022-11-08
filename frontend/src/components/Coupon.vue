@@ -2,7 +2,7 @@
   <div class="uk-width-1-1">
     <hr />
     <div class="uk-inline form-icon">
-      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon"
         ><img src="../img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
       >
       <input
@@ -29,7 +29,7 @@
       ></span>
     </div>
     <div class="uk-inline form-icon">
-      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon"
         ><img src="../img/sin-icon.png" style="width: 20px" /><span>NIS</span></a
       >
       <input

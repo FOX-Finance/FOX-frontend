@@ -155,7 +155,7 @@ export default {
         uk-form-custom="target: > button > span:first-child"
         style="padding-left: 0px; padding-right: 0px"
       >
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon">
           <span>CDP#</span>
         </a>
         <select
@@ -188,7 +188,7 @@ export default {
       <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
     </div>
     <div class="uk-inline form-icon">
-      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon"
         ><img src="../img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
       >
       <input
@@ -210,7 +210,7 @@ export default {
       <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
     </div>
     <div class="uk-inline form-icon">
-      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+      <a class="uk-form-icon uk-form-icon-flip input-form-icon"
         ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span></a
       >
       <input
@@ -222,7 +222,7 @@ export default {
     </div>
     <div class="wrap">
       <div class="uk-inline">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon"
           ><span>LTV(%)</span></a
         >
         <input
