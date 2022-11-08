@@ -10,6 +10,7 @@ import {
   getBalance,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
+import { ethers } from "ethers";
 
 export default {
   data() {
@@ -32,7 +33,7 @@ export default {
         return result / PRECISION;
       },
       set(value) {
-        this.foxs = BigInt(value * DECIMAL);
+        this.foxs = ethers.BigNumber.from(value * DECIMAL);
       },
     },
     formattedWETH: {
@@ -42,7 +43,7 @@ export default {
         return result / PRECISION;
       },
       set(value) {
-        this.weth = BigInt(value * DECIMAL);
+        this.weth = ethers.BigNumber.from(value * DECIMAL);
       },
     },
     formattedLTV: {

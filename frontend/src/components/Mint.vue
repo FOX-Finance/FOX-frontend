@@ -16,6 +16,7 @@ import {
   getWethRangeWhenMint,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL10, PRECISION, FIXED } from "../assets/js/contract.js";
+import { ethers } from "ethers";
 
 export default {
   data() {
@@ -25,10 +26,14 @@ export default {
       approval_foxs: false,
 
       cdp: "",
-      bnb: "",
-      ltv: "",
-      foxs: "",
-      mint: "",
+      weth: ethers.BigNumber.from("0"),
+      ltv: 0,
+      foxs: ethers.BigNumber.from("0"),
+      fox: ethers.BigNumber.from("0"),
+
+      weth_format: "",
+      foxs_format: "",
+      fox_format: "",
 
       bWethWrongRange: false,
       bLtvWrongRange: false,
@@ -38,15 +43,16 @@ export default {
     };
   },
   computed: {
-    formattedBNB: {
+    formattedWETH: {
       get() {
-        if (this.bnb === "") return "";
-        let result = Number(this.bnb / DECIMAL10);
-        return +(result / PRECISION).toFixed(FIXED);
+        if (this.weth_format === "") return "";
+        return this.weth_format;
       },
       set(value) {
-        this.bnb = BigInt(+(value).toFixed(FIXED) * DECIMAL);
-        console.log("set bnb = ", this.bnb)
+        let sValue = value.toString();
+        this.weth_format = sValue;
+        if (sValue === "") sValue = "0";
+        this.weth = ethers.utils.parseUnits(sValue, "ether");
       },
     },
     formattedLTV: {
@@ -55,27 +61,31 @@ export default {
         return +(this.ltv / 100).toFixed(2);
       },
       set(value) {
-        this.ltv = +(+(value).toFixed(2) * 100).toFixed(2);
+        this.ltv = +(+value.toFixed(2) * 100).toFixed(2);
       },
     },
     formattedFOXS: {
       get() {
-        if (this.foxs === "") return "";
-        let result = Number(this.foxs / DECIMAL10);
-        return +(result / PRECISION).toFixed(FIXED);
+        if (this.foxs_format === "") return "";
+        return this.foxs_format;
       },
       set(value) {
-        this.foxs = BigInt(+(value).toFixed(FIXED) * DECIMAL);
+        let sValue = value.toString();
+        this.foxs_format = sValue;
+        if (sValue === "") sValue = "0";
+        this.foxs = ethers.utils.parseUnits(sValue, "ether");
       },
     },
-    formattedMINT: {
+    formattedFOX: {
       get() {
-        if (this.mint === "") return "";
-        let result = Number(this.mint / DECIMAL10);
-        return +(result / PRECISION).toFixed(FIXED);
+        if (this.fox_format === "") return "";
+        return this.fox_format;
       },
       set(value) {
-        this.mint = BigInt(+(value).toFixed(FIXED) * DECIMAL);
+        let sValue = value.toString();
+        this.fox_format = sValue;
+        if (sValue === "") sValue = "0";
+        this.fox = ethers.utils.parseUnits(sValue, "ether");
       },
     },
   },
@@ -94,10 +104,11 @@ export default {
   methods: {
     checkAllowance: function () {
       getAllowance("WETH").then((allowance_weth) => {
-        if (allowance_weth != 0) {
+        console.log("allowance_weth", allowance_weth);
+        if (allowance_weth && !allowance_weth.isZero()) {
           this.approval_weth = true;
           getAllowance("FOXS").then((allowance_foxs) => {
-            if (allowance_foxs != 0) {
+            if (allowance_foxs && !allowance_foxs.isZero()) {
               this.approval_foxs = true;
             }
           });
@@ -138,58 +149,67 @@ export default {
     },
     mintOnClick: function () {
       this.emitter.emit("loading-event", true);
-      openAndDepositAndBorrow(this.bnb, this.mint).then((result) => {
+      openAndDepositAndBorrow(this.weth, this.fox).then((result) => {
         this.emitter.emit("loading-event", false);
         if (result) console.log("mint success!");
         else console.log("mint failed!");
       });
     },
     changeCDP: function () {
-      console.log("cdp:", this.cdp);
       getdefaultValuesMint(this.cdp).then((result) => {
-        this.bnb = BigInt(result.collateralAmount_);
         this.ltv = result.ltv_;
-        this.foxs = BigInt(result.shareAmount_);
-        this.fox = BigInt(result.stableAmount_);
+        this.setWETH(result.collateralAmount_);
+        this.setFOXS(result.shareAmount_);
+        this.setFOX(result.stableAmount_);
       });
     },
-    inputBNB: async function (event) {
-      // 1. update foxs, fox
+    setWETH: function (bigint_) {
+      this.weth = ethers.BigNumber.from(bigint_);
+      this.weth_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+    },
+    setFOXS: function (bigint_) {
+      this.foxs = ethers.BigNumber.from(bigint_);
+      this.foxs_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+    },
+    setFOX: function (bigint_) {
+      this.fox = ethers.BigNumber.from(bigint_);
+      this.fox_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+    },
+    inputWETH: async function (event) {
       this.updateFoxsAndFox().then((result) => {
         this.checkRange(event);
       });
     },
     inputFOXS: async function (event) {
-      // 1. update weth, fox
       this.updateWethAndFox().then((result) => {
         this.checkRange(event);
       });
     },
     inputLTV: async function (event) {
-      this.inputBNB(event);
+      this.inputWETH(event);
     },
     updateFoxsAndFox: async function () {
-      return getShareAmount(this.cdp, this.bnb, this.ltv).then((result) => {
-        this.foxs = result;
-        getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
-          this.mint = mintResult;
+      return getShareAmount(this.cdp, this.weth, this.ltv).then((result) => {
+        this.setFOXS(result);
+        getMintAmount(this.cdp, this.weth, this.ltv, this.foxs).then((mintResult) => {
+          this.setFOX(mintResult);
         });
       });
     },
     updateWethAndFox: async function () {
       return getDebtAmount(this.cdp, this.foxs, this.ltv).then((result) => {
-        this.bnb = result;
-        getMintAmount(this.cdp, this.bnb, this.ltv, this.foxs).then((mintResult) => {
-          this.mint = mintResult;
+        this.setWETH(result);
+        getMintAmount(this.cdp, this.weth, this.ltv, this.foxs).then((mintResult) => {
+          this.setFOX(mintResult);
         });
       });
     },
     checkRange: async function (event) {
       // ltv range check
-      console.log("Range Check CDP:", this.cdp, "weth : ", this.bnb, "foxs:", this.foxs);
-      getLtvRangeWhenMint(this.cdp, this.bnb, this.foxs).then((ltvRange) => {
-        let upperBound = BigInt(ltvRange.upperBound_); // should be <=
-        let lowerBound = BigInt(ltvRange.lowerBound_); // should be >
+      console.log("Range Check CDP:", this.cdp, "weth : ", this.weth, "foxs:", this.foxs);
+      getLtvRangeWhenMint(this.cdp, this.weth, this.foxs).then((ltvRange) => {
+        let upperBound = ltvRange.upperBound_; // should be <=
+        let lowerBound = ltvRange.lowerBound_; // should be >
         this.bLtvWrongRange =
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.ltv > upperBound ||
@@ -198,26 +218,27 @@ export default {
       });
 
       // Foxs range check
-      getFoxsRangeWhenMint(this.cdp, this.bnb, this.ltv).then((foxsRange) => {
-        let upperBound = BigInt(foxsRange.upperBound_);
-        let lowerBound = BigInt(foxsRange.lowerBound_);
+      getFoxsRangeWhenMint(this.cdp, this.weth, this.ltv).then((foxsRange) => {
+        let upperBound = ethers.BigNumber.from(foxsRange.upperBound_);
+        let lowerBound = ethers.BigNumber.from(foxsRange.lowerBound_);
         this.bFoxsWrongRange =
           (event !== undefined && parseInt(event.target.value) < 0) ||
-          this.foxs > upperBound ||
-          this.foxs < lowerBound;
+          this.foxs.gt(upperBound) ||
+          this.foxs.gt(lowerBound);
       });
 
       // Weth range check
       getWethRangeWhenMint(this.cdp, this.ltv, this.foxs).then((wethRange) => {
-        let upperBound = BigInt(wethRange.upperBound_);
-        let lowerBound = BigInt(wethRange.lowerBound_);
+        let upperBound = ethers.BigNumber.from(wethRange.upperBound_);
+        let lowerBound = ethers.BigNumber.from(wethRange.lowerBound_);
         this.bWethWrongRange =
           (event !== undefined && parseInt(event.target.value) < 0) ||
-          this.bnb > upperBound ||
-          this.bnb < lowerBound;
+          this.weth.gt(upperBound) ||
+          this.weth.lt(lowerBound);
         console.log(this.bWethWrongRange, "WETH RANGE!!! ", upperBound, lowerBound);
       });
     },
+    updateMax: function () {},
   },
 };
 </script>
@@ -274,15 +295,15 @@ export default {
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span>
+          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>WETH</span>
         </a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
           :class="{ wrong: bWethWrongRange }"
           type="number"
           min="0"
-          v-model="formattedBNB"
-          @input="inputBNB($event)"
+          v-model="formattedWETH"
+          @input="inputWETH($event)"
           :disabled="cdp === ''"
         />
       </div>
@@ -334,7 +355,7 @@ export default {
           readonly
           class="uk-input result-form uk-form-width-medium uk-form-large"
           type="number"
-          v-model="formattedMINT"
+          v-model="formattedFOX"
         />
       </div>
       <hr />

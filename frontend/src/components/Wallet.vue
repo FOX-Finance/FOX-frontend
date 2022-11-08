@@ -6,6 +6,7 @@ import {
   getBalance,
 } from "../assets/js/interface_request.js";
 import { DECIMAL, DECIMAL14, PRECISION4 } from "../assets/js/contract.js";
+import { ethers } from "ethers";
 export default {
   data() {
     return {
@@ -13,9 +14,9 @@ export default {
       btnText: "Connect to wallet",
       btnTooltip: "Connect to wallet",
 
-      weth: BigInt(0),
-      foxs: BigInt(0),
-      fox: BigInt(0),
+      weth: ethers.BigNumber.from(0),
+      foxs: ethers.BigNumber.from(0),
+      fox: ethers.BigNumber.from(0),
 
       intervalid: "",
     };
@@ -27,7 +28,7 @@ export default {
         return (result / PRECISION4).toString();
       },
       set(value) {
-        this.weth = BigInt(value * DECIMAL);
+        this.weth = ethers.BigNumber.from(value * DECIMAL);
       },
     },
     formattedFOXS: {
@@ -36,7 +37,7 @@ export default {
         return (result / PRECISION4).toString();
       },
       set(value) {
-        this.foxs = BigInt(value * DECIMAL);
+        this.foxs = ethers.BigNumber.from(value * DECIMAL);
       },
     },
     formattedFOX: {
@@ -45,7 +46,7 @@ export default {
         return (result / PRECISION4).toString();
       },
       set(value) {
-        this.fox = BigInt(value * DECIMAL);
+        this.fox = ethers.BigNumber.from(value * DECIMAL);
       },
     },
   },

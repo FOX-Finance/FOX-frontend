@@ -10,7 +10,7 @@ const binanceRPCUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545';
 const binanceBlockExploreUrl = 'https://testnet.bscscan.com';
 const localhostRPCUrl = 'http://localhost:8545';
 const localhostChainId = '0x7A69'; // 31337
-const ETHERS_MAX = ethers.constants.MaxUint256.toBigInt();
+const ETHERS_MAX = ethers.constants.MaxUint256;
 
 let account = '';
 let contract_fox = '';
@@ -174,7 +174,7 @@ async function getBalance(contractName) {
     let _contract = getContract(contractName);
     if (_contract === '' || getAccount() === '') return 0;
     let response = await balanceOf_contract(_contract, getAccount());
-    return BigInt(response);
+    return ethers.BigNumber.from(response);
 }
 
 async function getAllowance(contractName) {
@@ -182,28 +182,28 @@ async function getAllowance(contractName) {
     let _address = getApproveAddress(contractName);
     if (_contract === '' || getAccount() === '') return 0;
     let response = await allowance_contract(_contract, getAccount(), _address);
-    return BigInt(response);
+    return ethers.BigNumber.from(response);
 }
 
 async function getShareAmount(cdpID, collateralAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
     let response = await requiredShareAmountFromCollateralToLtv_contract(_contract, cdpID, collateralAmount, ltv);
-    return BigInt(response);
+    return ethers.BigNumber.from(response);
 }
 
 async function getDebtAmount(cdpID, shareAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
     let response = await requiredCollateralAmountFromShareToLtv_contract(_contract, cdpID, shareAmount, ltv);
-    return BigInt(response);
+    return ethers.BigNumber.from(response);
 }
 
 async function getMintAmount(cdpID, collateralAmount, ltv, shareAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
     let response = await expectedMintAmountToLtv_contract(_contract, cdpID, collateralAmount, ltv, shareAmount);
-    return BigInt(response);
+    return ethers.BigNumber.from(response);
 }
 
 async function getdefaultValuesMint(cdpID) {
@@ -224,7 +224,7 @@ async function getCollateralAmount(cdpID, shareAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
     let response = await exchangedCollateralAmountFromShareToLtv_contract(_contract, cdpID, shareAmount, ltv);
-    return BigInt(response);
+    return ethers.BigNumber.from(response);
 }
 
 /* range */

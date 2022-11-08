@@ -4,12 +4,13 @@ import WETH from './json/WETH.json'
 import FOXS from './json/FOXS.json'
 import SIN from './json/SIN.json'
 import address from './json/address.json'
+import { ethers } from "ethers";
 
-const DECIMAL = 10**18;
-const DECIMAL10 = BigInt(10**10);
-const PRECISION = 10**8;
-const DECIMAL14 = BigInt(10**14);
-const PRECISION4 = 10**4;
+const DECIMAL = ethers.BigNumber.from("1000000000000000000");
+const DECIMAL10 = ethers.BigNumber.from("10000000000");
+const PRECISION = ethers.BigNumber.from("100000000");
+const DECIMAL14 = ethers.BigNumber.from("100000000000000");
+const PRECISION4 = ethers.BigNumber.from("10000");
 const FIXED = 4;
 
 const FOX_CONTRACT_ADDR = address.FOX;
