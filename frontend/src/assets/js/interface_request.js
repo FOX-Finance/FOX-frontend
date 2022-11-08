@@ -3,7 +3,7 @@
  */
 import { ethers } from "ethers";
 import { DECIMAL, FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract } from "./contract_request.js"
+import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
 const binanceRPCUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545';
@@ -227,6 +227,20 @@ async function getCollateralAmount(cdpID, shareAmount, ltv) {
     return ethers.BigNumber.from(response);
 }
 
+async function getTrustLevel() {
+    let _contract = getContract("FOX");
+    if (_contract === '') return 0;
+    let response = await trustLevel_contract(_contract);
+    return response;
+}
+
+async function getMaxLTV() {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '') return 0;
+    let response = await maxLTV_contract(_contract);
+    return response;
+}
+
 /* range */
 
 async function getLtvRangeWhenMint(cdpID, collateralAmount, shareAmount) {
@@ -271,4 +285,4 @@ async function getShareAmountRangeWhenBuyback(cdpID, shareAmount) {
     return response;
 }
 
-export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getRedeemAmount, getCollateralAmount, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback };
+export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getRedeemAmount, getCollateralAmount, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback };

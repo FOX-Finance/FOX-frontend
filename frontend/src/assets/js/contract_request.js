@@ -94,6 +94,16 @@ async function exchangedCollateralAmountFromShareToLtv_contract(_contract, _id, 
     return response;
 }
 
+async function trustLevel_contract(_contract) {
+    let response = await _contract.methods.trustLevel().call();
+    return response;
+}
+
+async function maxLTV_contract(_contract) {
+    let response = await _contract.methods.maxLTV().call();
+    return response;
+}
+
 /* range */
 
 async function ltvRangeWhenMint_contract(_contract, _id, _collateralAmount, _shareAmount) {
@@ -138,4 +148,4 @@ async function shareAmountRangeWhenBuyback_contract(_contract, _id, _shareAmount
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract };
+export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract };

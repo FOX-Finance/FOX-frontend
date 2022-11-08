@@ -11,6 +11,8 @@ import {
   getMintAmount,
   getdefaultValuesMint,
   getBalance,
+  getTrustLevel,
+  getMaxLTV,
   getLtvRangeWhenMint,
   getFoxsRangeWhenMint,
   getWethRangeWhenMint,
@@ -39,6 +41,8 @@ export default {
       bLtvWrongRange: false,
       bFoxsWrongRange: false,
 
+      trustLevel: 0,
+      maxLTV: 0,
       ETHERS_MAX: ETHERS_MAX,
     };
   },
@@ -99,6 +103,7 @@ export default {
       this.connected = true;
     }
 
+    this.updateValues();
     this.checkAllowance();
   },
   methods: {
@@ -113,6 +118,14 @@ export default {
             }
           });
         }
+      });
+    },
+    updateValues: function () {
+      getTrustLevel().then((result) => {
+        this.trustLevel = +(result / 100).toFixed(2);
+      });
+      getMaxLTV().then((result) => {
+        this.maxLTV = +(result / 100).toFixed(2);
       });
     },
     connectOnClick: function () {
@@ -254,8 +267,8 @@ export default {
         this.bFoxsWrongRange =
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.foxs.gt(upperBound) ||
-          this.foxs.gt(lowerBound);
-          console.log(this.bLtvWrongRange, "FOXS RANGE!!! ", upperBound, lowerBound);
+          this.foxs.lt(lowerBound);
+        console.log(this.bFoxsWrongRange, "FOXS RANGE!!! ", upperBound, lowerBound);
       });
 
       // Weth range check
@@ -325,7 +338,9 @@ export default {
         <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
       </div>
       <div class="uk-inline form-icon">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" @click="updateMaxWethOnClick()"
+        <a
+          class="uk-form-icon uk-form-icon-flip input-form-icon"
+          @click="updateMaxWethOnClick()"
           ><img src="../img/bnb-icon.png" style="width: 20px" /><span>WETH</span>
         </a>
         <input
@@ -340,7 +355,9 @@ export default {
       </div>
       <div class="wrap">
         <div class="uk-inline">
-          <a class="uk-form-icon uk-form-icon-flip input-form-icon" @click="updateMaxLtvOnClick()"
+          <a
+            class="uk-form-icon uk-form-icon-flip input-form-icon"
+            @click="updateMaxLtvOnClick()"
             ><span>LTV(%)</span></a
           >
           <input
@@ -354,14 +371,20 @@ export default {
           />
         </div>
       </div>
-      <div class="description">
-        <span style="font-weight: bold">EXCHANGE RATES</span>USDC: $1.000
+      <div v-if="bWethWrongRange || bLtvWrongRange" class="description">
+        <span style="font-weight: bold; color: red">WRONG VALUE!</span>
+      </div>
+      <div v-else class="description">
+        <span style="font-weight: bold">MAX LTV:</span> {{ this.maxLTV }}%
       </div>
       <div class="wrap">
         <span class="icon-circle" uk-icon="plus"></span>
       </div>
       <div class="uk-inline form-icon">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" @click="updateMaxFoxsOnClick()">
+        <a
+          class="uk-form-icon uk-form-icon-flip input-form-icon"
+          @click="updateMaxFoxsOnClick()"
+        >
           <img src="../img/foxs-icon.png" style="width: 20px" />
           <span>FOXS</span>
         </a>
@@ -373,6 +396,12 @@ export default {
           @input="inputFOXS($event)"
           :disabled="cdp === ''"
         />
+      </div>
+      <div v-if="bFoxsWrongRange" class="description wrap-top">
+        <span style="font-weight: bold; color: red">WRONG VALUE!</span>
+      </div>
+      <div v-else class="description wrap-top">
+        <span style="font-weight: bold">TRUST LEVEL:</span> {{ this.trustLevel }}%
       </div>
       <div class="wrap">
         <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
