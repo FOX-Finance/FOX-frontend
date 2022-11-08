@@ -191,134 +191,165 @@ export default {
 
 <template>
   <div class="uk-width-1-1">
-    <hr />
-    <div class="uk-inline form-icon">
-      <div
-        uk-form-custom="target: > button > span:first-child"
-        style="padding-left: 0px; padding-right: 0px"
-      >
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
-          <span>CDP#</span>
-        </a>
-        <select
-          v-model="cdp"
-          aria-label="Custom controls"
-          class="form-button uk-form-width-medium uk-form-large"
-          @change="changeCDP"
-        >
-          <option value="">Please select...</option>
-          <option value="0">CDP #0</option>
-          <option value="1">CDP #1</option>
-          <option value="2">CDP #2</option>
-          <option value="3">CDP #3</option>
-        </select>
-        <button
-          class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
-          type="button"
-          tabindex="-1"
-          style="max-width: 100%"
-        >
-          <span></span>
-          <span
-            uk-icon="icon: chevron-down"
-            style="float: right; position: relative; right: 95px; top: 17px"
-          ></span>
-        </button>
+    <div v-if="!connected" class="spinner-outer uk-width-1-1">
+      <div class="spinner-inner">
+        <span uk-icon="icon: more; ratio: 3"></span>
+        <p>Connect to wallet first</p>
       </div>
     </div>
-
-    <div class="wrap">
-      <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
-    </div>
-    <div class="uk-inline form-icon">
-      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-        ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span>
-      </a>
-      <input
-        class="uk-input input-form uk-form-width-medium uk-form-large"
-        type="number"
-        min="0"
-        v-model="formattedBNB"
-        @input="inputBNB($event)"
-      />
-    </div>
-    <div class="wrap">
-      <div class="uk-inline">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
-          ><span>LTV(%)</span></a
+    <div class="uk-width-1-1">
+      <hr />
+      <div class="uk-inline form-icon">
+        <div
+          uk-form-custom="target: > button > span:first-child"
+          style="padding-left: 0px; padding-right: 0px"
         >
+          <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+            <span>CDP#</span>
+          </a>
+          <select
+            v-model="cdp"
+            aria-label="Custom controls"
+            class="form-button uk-form-width-medium uk-form-large"
+            @change="changeCDP"
+            :disabled="!connected"
+          >
+            <option value="">Please select...</option>
+            <option value="0">CDP #0</option>
+            <option value="1">CDP #1</option>
+            <option value="2">CDP #2</option>
+            <option value="3">CDP #3</option>
+          </select>
+          <button
+            class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
+            type="button"
+            tabindex="-1"
+            style="max-width: 100%"
+            :disabled="!connected"
+          >
+            <span></span>
+            <span
+              uk-icon="icon: chevron-down"
+              style="float: right; position: relative; right: 95px; top: 17px"
+            ></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+      </div>
+      <div class="uk-inline form-icon">
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span>
+        </a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
           type="number"
           min="0"
-          v-model="formattedLTV"
-          @input="inputLTV($event)"
+          v-model="formattedBNB"
+          @input="inputBNB($event)"
+          :disabled="cdp === ''"
         />
       </div>
-    </div>
-    <div class="description">
-      <span style="font-weight: bold">EXCHANGE RATES</span>USDC: $1.000
-    </div>
-    <div class="wrap">
-      <span class="icon-circle" uk-icon="plus"></span>
-    </div>
-    <div class="uk-inline form-icon">
-      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
-        <img src="../img/foxs-icon.png" style="width: 20px" />
-        <span>FOXS</span>
-      </a>
-      <input
-        class="uk-input input-form uk-form-width-medium uk-form-large"
-        type="number"
-        v-model="formattedFOXS"
-        @input="inputFOXS"
-      />
-    </div>
-    <div class="wrap">
-      <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
-    </div>
-    <div class="uk-inline form-icon">
-      <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
-        <img src="../img/fox-icon.png" style="width: 20px" />
-        <span>FOX</span>
-      </a>
-      <input
-        readonly
-        class="uk-input result-form uk-form-width-medium uk-form-large"
-        type="number"
-        v-model="formattedMINT"
-      />
-    </div>
-    <hr />
-    <div v-if="approval_weth && approval_foxs">
-      <button
-        class="uk-button uk-button-default uk-button-large form-button"
-        @click="mintOnClick"
-      >
-        Mint
-      </button>
-    </div>
-    <div v-else-if="connected">
-      <button
-        class="uk-button uk-button-default uk-button-large form-button"
-        @click="approveOnClick"
-      >
-        <span v-if="!approval_weth">Approve(WETH)</span>
-        <span v-else-if="!approval_foxs">Approve(FOXS)</span>
-      </button>
-    </div>
-    <div v-else>
-      <button
-        class="uk-button uk-button-default uk-button-large form-button"
-        @click="connectOnClick"
-      >
-        Connect Wallet
-      </button>
+      <div class="wrap">
+        <div class="uk-inline">
+          <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#"
+            ><span>LTV(%)</span></a
+          >
+          <input
+            class="uk-input input-form uk-form-width-medium uk-form-large"
+            type="number"
+            min="0"
+            v-model="formattedLTV"
+            @input="inputLTV($event)"
+            :disabled="cdp === ''"
+          />
+        </div>
+      </div>
+      <div class="description">
+        <span style="font-weight: bold">EXCHANGE RATES</span>USDC: $1.000
+      </div>
+      <div class="wrap">
+        <span class="icon-circle" uk-icon="plus"></span>
+      </div>
+      <div class="uk-inline form-icon">
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+          <img src="../img/foxs-icon.png" style="width: 20px" />
+          <span>FOXS</span>
+        </a>
+        <input
+          class="uk-input input-form uk-form-width-medium uk-form-large"
+          type="number"
+          v-model="formattedFOXS"
+          @input="inputFOXS"
+          :disabled="cdp === ''"
+        />
+      </div>
+      <div class="wrap">
+        <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+      </div>
+      <div class="uk-inline form-icon">
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon" href="#">
+          <img src="../img/fox-icon.png" style="width: 20px" />
+          <span>FOX</span>
+        </a>
+        <input
+          readonly
+          class="uk-input result-form uk-form-width-medium uk-form-large"
+          type="number"
+          v-model="formattedMINT"
+        />
+      </div>
+      <hr />
+      <div v-if="approval_weth && approval_foxs">
+        <button
+          class="uk-button uk-button-default uk-button-large form-button"
+          @click="mintOnClick"
+        >
+          Mint
+        </button>
+      </div>
+      <div v-else-if="connected">
+        <button
+          class="uk-button uk-button-default uk-button-large form-button"
+          @click="approveOnClick"
+        >
+          <span v-if="!approval_weth">Approve(WETH)</span>
+          <span v-else-if="!approval_foxs">Approve(FOXS)</span>
+        </button>
+      </div>
+      <div v-else>
+        <button
+          class="uk-button uk-button-default uk-button-large form-button"
+          @click="connectOnClick"
+        >
+          Connect Wallet
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.spinner-outer {
+  z-index: 2;
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 25px;
+}
+
+.spinner-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -100px 0 0 -78px;
+}
+
 select {
   text-align-last: left;
   text-align: left;
