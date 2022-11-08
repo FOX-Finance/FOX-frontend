@@ -15,7 +15,7 @@ import {
   getFoxsRangeWhenMint,
   getWethRangeWhenMint,
 } from "../assets/js/interface_request.js";
-import { DECIMAL, DECIMAL10, PRECISION } from "../assets/js/contract.js";
+import { DECIMAL, DECIMAL10, PRECISION, FIXED } from "../assets/js/contract.js";
 
 export default {
   data() {
@@ -42,45 +42,40 @@ export default {
       get() {
         if (this.bnb === "") return "";
         let result = Number(this.bnb / DECIMAL10);
-        return result / PRECISION;
+        return +(result / PRECISION).toFixed(FIXED);
       },
       set(value) {
-        this.bnb = BigInt(value * DECIMAL);
+        this.bnb = BigInt(+(value).toFixed(FIXED) * DECIMAL);
+        console.log("set bnb = ", this.bnb)
       },
     },
     formattedLTV: {
       get() {
-        console.log("LTV GET : ", this.ltv);
         if (this.ltv === "") return "";
-        return this.ltv / 100;
+        return +(this.ltv / 100).toFixed(2);
       },
       set(value) {
-        // LTV cut
-        var regexp = /^\d*(\.\d{0,2})?$/;
-        if (value.toString().search(regexp) == -1) {
-          value = this.ltv / 100;
-        }
-        this.ltv = +(value * 100).toFixed(2);
+        this.ltv = +(+(value).toFixed(2) * 100).toFixed(2);
       },
     },
     formattedFOXS: {
       get() {
         if (this.foxs === "") return "";
         let result = Number(this.foxs / DECIMAL10);
-        return result / PRECISION;
+        return +(result / PRECISION).toFixed(FIXED);
       },
       set(value) {
-        this.foxs = BigInt(value * DECIMAL);
+        this.foxs = BigInt(+(value).toFixed(FIXED) * DECIMAL);
       },
     },
     formattedMINT: {
       get() {
         if (this.mint === "") return "";
         let result = Number(this.mint / DECIMAL10);
-        return result / PRECISION;
+        return +(result / PRECISION).toFixed(FIXED);
       },
       set(value) {
-        this.mint = BigInt(value * DECIMAL);
+        this.mint = BigInt(+(value).toFixed(FIXED) * DECIMAL);
       },
     },
   },
