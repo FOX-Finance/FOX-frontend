@@ -4,7 +4,7 @@ import {
   getAccount,
   approveMax,
   getAllowance,
-  getCurrentLTVFromCDP,
+  //getCurrentLTVFromCDP,
   getRedeemAmount,
   redeem,
   getBalance,
@@ -120,9 +120,11 @@ export default {
     },
     changeCDP: function () {
       // new => empty 리턴하도로 바꾼다함
+      /*
       getCurrentLTVFromCDP(this.cdp).then((result) => {
         this.ltv = result;
       });
+      */
     },
     inputFOX: function (event) {
       getBalance("FOX").then((currentFOX) => {

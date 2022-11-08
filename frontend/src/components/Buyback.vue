@@ -4,7 +4,7 @@ import {
   getAccount,
   approveMax,
   getAllowance,
-  getCurrentLTVFromCDP,
+  //getCurrentLTVFromCDP,
   getCollateralAmount,
   buyback,
   getBalance,
@@ -121,9 +121,11 @@ export default {
       });
     },
     changeCDP: function () {
+      /*
       getCurrentLTVFromCDP(this.cdp).then((result) => {
         this.ltv = result;
       });
+      */
     },
     inputFOXS: function () {
       getCollateralAmount(this.cdp, this.foxs, this.ltv).then((result) => {

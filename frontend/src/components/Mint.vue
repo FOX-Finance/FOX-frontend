@@ -1,5 +1,6 @@
 <script>
 import {
+  ETHERS_MAX,
   connectMetamask,
   getAccount,
   approveMax,
@@ -8,7 +9,7 @@ import {
   getShareAmount,
   getDebtAmount,
   getMintAmount,
-  getCurrentLTVFromCDP,
+  getdefaultValuesMint,
   getBalance,
   getLtvRangeWhenMint,
 } from "../assets/js/interface_request.js";
@@ -26,6 +27,7 @@ export default {
       ltv: "",
       foxs: "",
       mint: "",
+      ETHERS_MAX: ETHERS_MAX,
     };
   },
   computed: {
@@ -135,9 +137,12 @@ export default {
       });
     },
     changeCDP: function () {
-      // new => empty 리턴하도로 바꾼다함
-      getCurrentLTVFromCDP(this.cdp).then((result) => {
-        this.ltv = result;
+      console.log("cdp:",this.cdp)
+      getdefaultValuesMint(this.cdp).then((result) => {
+        this.bnb = BigInt(result.collateralAmount_)
+        this.ltv = result.ltv_
+        this.foxs = BigInt(result.shareAmount_)
+        this.fox = BigInt(result.stableAmount_)
       });
     },
     inputBNB: function (event) {
@@ -215,10 +220,10 @@ export default {
             :disabled="!connected"
           >
             <option value="">Please select...</option>
+            <option :value="ETHERS_MAX">Open</option>
             <option value="0">CDP #0</option>
             <option value="1">CDP #1</option>
             <option value="2">CDP #2</option>
-            <option value="3">CDP #3</option>
           </select>
           <button
             class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
@@ -335,8 +340,8 @@ export default {
 .spinner-outer {
   z-index: 2;
   position: absolute;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.85);
