@@ -37,6 +37,12 @@ export default {
       </div>
     </div>
     <div class="background"></div>
+    <div
+      :class="{
+        default_background: $route.name !== 'coupon',
+        coupon_background: $route.name === 'coupon',
+      }"
+    ></div>
     <div class="uk-text-center uk-width-1-1 uk-height-1-1 wrap-top">
       <Menu />
       <div class="wallet-container uk-width-1-1" style="text-align: center">
@@ -62,6 +68,56 @@ export default {
   height: 100vh;
   background-image: url(./img/img-noise-361x370.png);
   background-repeat: repeat;
+}
+
+.default_background {
+  z-index: -1;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.4;
+  background: rgb(226, 255, 181);
+  background: linear-gradient(
+    90deg,
+    rgba(226, 255, 181, 1) 0%,
+    rgba(237, 218, 156, 1) 35%,
+    rgba(241, 255, 191, 1) 68%,
+    rgba(224, 201, 131, 1) 100%
+  );
+}
+
+.coupon_background {
+  z-index: -1;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.5;
+  background: rgb(217, 214, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(217, 214, 255, 1) 0%,
+    rgba(156, 228, 237, 1) 35%,
+    rgba(179, 243, 255, 1) 68%,
+    rgba(65, 228, 214, 1) 100%
+  );
+}
+
+.lined_background {
+  z-index: -1;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+
+  background-color: #f9f9f9;
+  opacity: 0.5;
+  background-size: 34px 34px;
+  background-image: repeating-linear-gradient(
+    0deg,
+    #ececec,
+    #ececec 1.7000000000000002px,
+    #f9f9f9 1.7000000000000002px,
+    #f9f9f9
+  );
 }
 
 .spinner-outer {
