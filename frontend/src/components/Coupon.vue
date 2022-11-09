@@ -1,11 +1,11 @@
 <template>
   <div class="uk-width-1-1">
-    <div v-if="!connected" class="wallet-outer uk-width-1-1">
+    <!--div v-if="!connected" class="wallet-outer uk-width-1-1">
       <div class="wallet-inner">
         <span uk-icon="icon: more; ratio: 3"></span>
         <p>Please connect to wallet</p>
       </div>
-    </div>
+    </div-->
     <div class="uk-width-1-1">
       <hr />
       <div class="uk-inline form-icon">
@@ -17,7 +17,7 @@
           type="number"
         />
       </div>
-      <div class="description">
+      <div class="description wrap-top">
         <span style="font-weight: bold">EXCHANGE RATES</span>USDC: $1.000
       </div>
       <hr class="custom-divider-vertical" />

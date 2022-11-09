@@ -1,5 +1,6 @@
 <script setup>
 import Coupon from "../components/Coupon.vue";
+import Annihilation from "../components/Annihilation.vue";
 </script>
 
 <template>
@@ -8,10 +9,14 @@ import Coupon from "../components/Coupon.vue";
       <div>
         <ul class="uk-flex-center" uk-tab data-uk-tab="{connect:'#buyback-tab-contents'}">
           <li class="uk-active"><a>Coupon</a></li>
+          <li><a>Annihilation</a></li>
         </ul>
         <ul id="buyback-tab-contents" class="uk-switcher">
           <li>
             <Coupon />
+          </li>
+          <li>
+            <Annihilation />
           </li>
         </ul>
       </div>
