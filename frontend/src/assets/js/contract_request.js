@@ -29,6 +29,13 @@ async function buybackRepayDebt_contract(_contract, _account, _id, _shareAmount)
     return response;
 }
 
+async function recollateralize_contract(_contract, _account, _id, _collateralAmount, _ltv) {
+    console.log("-- [request] recollateralize");
+    let response = await _contract.methods.recollateralize(_account, _id, _collateralAmount, _ltv).send({ from: _account });
+    console.log("-- [response] recollateralize :", response);
+    return response;
+}
+
 /* Call */
 async function allowance_contract(_contract, _account, _address) {
     console.log("-- [request] allowance");
@@ -82,6 +89,13 @@ async function defaultValueRedeem_contract(_contract, _account, _id) {
     return response;
 }
 
+async function defaultValuesRecollateralize_contract(_contract, _account, _id) {
+    console.log("-- [request] defaultValuesRecollateralize", _id);
+    let response = await _contract.methods.defaultValuesRecollateralize(_account, _id).call();
+    console.log("-- [response] defaultValuesRecollateralize :", response);
+    return response;
+}
+
 async function expectedRedeemAmountToLtv_contract(_contract, _id, _stableAmount, _ltv) {
     console.log("-- [request] expectedRedeemAmountToLtv");
     let response = await _contract.methods.expectedRedeemAmountToLtv(_id, _stableAmount, _ltv).call();
@@ -98,6 +112,13 @@ async function exchangedCollateralAmountFromShareToLtv_contract(_contract, _id, 
     console.log("-- [request] exchangedCollateralAmountFromShareToLtv");
     let response = await _contract.methods.exchangedCollateralAmountFromShareToLtv(_id, _shareAmount, _ltv).call();
     console.log("-- [response] exchangedCollateralAmountFromShareToLtv :", response);
+    return response;
+}
+
+async function exchangedShareAmountFromCollateralToLtv_contract(_contract, _id, _collateralAmount, _ltv) {
+    console.log("-- [request] exchangedShareAmountFromCollateralToLtv");
+    let response = await _contract.methods.exchangedShareAmountFromCollateralToLtv(_id, _collateralAmount, _ltv).call();
+    console.log("-- [response] exchangedShareAmountFromCollateralToLtv :", response);
     return response;
 }
 
@@ -162,4 +183,18 @@ async function shareAmountRangeWhenBuyback_contract(_contract, _id, _shareAmount
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract };
+async function ltvRangeWhenRecollateralize_contract(_contract, _id, _collateralAmount) {
+    console.log("-- [request] ltvRangeWhenRecollateralize");
+    let response = await _contract.methods.ltvRangeWhenRecollateralize(_id, _collateralAmount).call();
+    console.log("-- [response] ltvRangeWhenRecollateralize :", response);
+    return response;
+}
+
+async function collateralAmountRangeWhenRecollateralize_contract(_contract, _account, _id, _ltv) {
+    console.log("-- [request] collateralAmountRangeWhenRecollateralize");
+    let response = await _contract.methods.collateralAmountRangeWhenRecollateralize(_account, _id, _ltv).call();
+    console.log("-- [response] collateralAmountRangeWhenRecollateralize :", response);
+    return response;
+}
+
+export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract };

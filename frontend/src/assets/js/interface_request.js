@@ -3,7 +3,7 @@
  */
 import { ethers } from "ethers";
 import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract } from "./contract_request.js"
+import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
 const binanceRPCUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545';
@@ -170,6 +170,13 @@ async function buyback(cdpID, shareAmount) {
     return response;
 }
 
+async function recollateralize(cdpID, collateralAmount, ltv) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await recollateralize_contract(_contract, getAccount(), cdpID, collateralAmount, ltv);
+    return response;
+}
+
 async function getBalance(contractName) {
     let _contract = getContract(contractName);
     if (_contract === '' || getAccount() === '') return 0;
@@ -220,6 +227,13 @@ async function getdefaultValuesRedeem(cdpID) {
     return response;
 }
 
+async function getdefaultValuesRecollateralize(cdpID) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await defaultValuesRecollateralize_contract(_contract, getAccount(), cdpID);
+    return response;
+}
+
 async function getRedeemAmount(cdpID, stableAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
@@ -231,6 +245,13 @@ async function getCollateralAmount(cdpID, shareAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
     let response = await exchangedCollateralAmountFromShareToLtv_contract(_contract, cdpID, shareAmount, ltv);
+    return ethers.BigNumber.from(response);
+}
+
+async function getShareAmountInRecollateralize(cdpID, collateralAmount, ltv) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '') return 0;
+    let response = await exchangedShareAmountFromCollateralToLtv_contract(_contract, cdpID, collateralAmount, ltv);
     return ethers.BigNumber.from(response);
 }
 
@@ -299,4 +320,18 @@ async function getShareAmountRangeWhenBuyback(cdpID, shareAmount) {
     return response;
 }
 
-export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getdefaultValuesRedeem, getRedeemAmount, getCollateralAmount, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getFoxRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback };
+async function getLtvRangeWhenRecollateralize(cdpID, collateralAmount) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '') return 0;
+    let response = await ltvRangeWhenRecollateralize_contract(_contract, cdpID, collateralAmount);
+    return response;
+}
+
+async function getWethRangeWhenRecollateralize(cdpID, ltv) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await collateralAmountRangeWhenRecollateralize_contract(_contract, getAccount(), cdpID, ltv);
+    return response;
+}
+
+export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, recollateralize, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getdefaultValuesRedeem, getdefaultValuesRecollateralize, getRedeemAmount, getCollateralAmount, getShareAmountInRecollateralize, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getFoxRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback, getLtvRangeWhenRecollateralize, getWethRangeWhenRecollateralize };
