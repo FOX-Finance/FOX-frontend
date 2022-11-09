@@ -57,6 +57,7 @@ export default {
       },
       set(value) {
         this.ltv = +(+value.toFixed(2) * 100).toFixed(2);
+        this.checkRange();
       },
     },
     formattedFOXS: {
@@ -81,6 +82,7 @@ export default {
         this.fox_format = sValue;
         if (sValue === "") sValue = "0";
         this.fox = ethers.utils.parseUnits(sValue, "ether");
+        this.checkRange();
       },
     },
   },

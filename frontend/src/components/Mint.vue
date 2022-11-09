@@ -55,6 +55,7 @@ export default {
         this.weth_format = sValue;
         if (sValue === "") sValue = "0";
         this.weth = ethers.utils.parseUnits(sValue, "ether");
+        this.checkRange();
       },
     },
     formattedLTV: {
@@ -64,6 +65,7 @@ export default {
       },
       set(value) {
         this.ltv = +(+value.toFixed(2) * 100).toFixed(2);
+        this.checkRange();
       },
     },
     formattedFOXS: {
@@ -76,6 +78,7 @@ export default {
         this.foxs_format = sValue;
         if (sValue === "") sValue = "0";
         this.foxs = ethers.utils.parseUnits(sValue, "ether");
+        this.checkRange();
       },
     },
     formattedFOX: {

@@ -2,7 +2,7 @@
  * Declarations
  */
 import { ethers } from "ethers";
-import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
+import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, GATEWAY_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI, GATEWAY_CONTRACT_ABI } from "./contract.js"
 import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
@@ -18,6 +18,7 @@ let contract_foxfarm = '';
 let contract_weth = '';
 let contract_foxs = '';
 let contract_sin = '';
+let contract_gateway = '';
 
 /* 
  * Initialize functions
@@ -30,6 +31,7 @@ async function connectContract() {
     contract_weth = await new window.web3.eth.Contract(WETH_CONTRACT_ABI, WETH_CONTRACT_ADDR);
     contract_foxs = await new window.web3.eth.Contract(FOXS_CONTRACT_ABI, FOXS_CONTRACT_ADDR);
     contract_sin = await new window.web3.eth.Contract(SIN_CONTRACT_ABI, SIN_CONTRACT_ADDR);
+    contract_gateway = await new window.web3.eth.Contract(GATEWAY_CONTRACT_ABI, GATEWAY_CONTRACT_ADDR);
     console.log("connect to contract done.");
 }
 
@@ -123,6 +125,7 @@ function getContract(contractName) {
     else if (contractName === "WETH") return contract_weth;
     else if (contractName === "FOXS") return contract_foxs;
     else if (contractName === "SIN") return contract_sin;
+    else if (contractName === "GATEWAY") return contract_gateway;
 }
 
 function getContractImg(contractName) {
@@ -177,6 +180,8 @@ async function recollateralize(cdpID, collateralAmount, ltv) {
     return response;
 }
 
+/* view functions */
+
 async function getBalance(contractName) {
     let _contract = getContract(contractName);
     if (_contract === '' || getAccount() === '') return 0;
@@ -193,63 +198,63 @@ async function getAllowance(contractName) {
 }
 
 async function getShareAmount(cdpID, collateralAmount, ltv) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await requiredShareAmountFromCollateralToLtv_contract(_contract, cdpID, collateralAmount, ltv);
     return ethers.BigNumber.from(response);
 }
 
 async function getDebtAmount(cdpID, shareAmount, ltv) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await requiredCollateralAmountFromShareToLtv_contract(_contract, cdpID, shareAmount, ltv);
     return ethers.BigNumber.from(response);
 }
 
 async function getMintAmount(cdpID, collateralAmount, ltv, shareAmount) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await expectedMintAmountToLtv_contract(_contract, cdpID, collateralAmount, ltv, shareAmount);
     return ethers.BigNumber.from(response);
 }
 
 async function getdefaultValuesMint(cdpID) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
     let response = await defaultValuesMint_contract(_contract, getAccount(), cdpID);
     return response;
 }
 
 async function getdefaultValuesRedeem(cdpID) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
     let response = await defaultValueRedeem_contract(_contract, getAccount(), cdpID);
     return response;
 }
 
 async function getdefaultValuesRecollateralize(cdpID) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
     let response = await defaultValuesRecollateralize_contract(_contract, getAccount(), cdpID);
     return response;
 }
 
 async function getRedeemAmount(cdpID, stableAmount, ltv) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await expectedRedeemAmountToLtv_contract(_contract, cdpID, stableAmount, ltv);
     return response;
 }
 
 async function getCollateralAmount(cdpID, shareAmount, ltv) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await exchangedCollateralAmountFromShareToLtv_contract(_contract, cdpID, shareAmount, ltv);
     return ethers.BigNumber.from(response);
 }
 
 async function getShareAmountInRecollateralize(cdpID, collateralAmount, ltv) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await exchangedShareAmountFromCollateralToLtv_contract(_contract, cdpID, collateralAmount, ltv);
     return ethers.BigNumber.from(response);
@@ -272,63 +277,63 @@ async function getMaxLTV() {
 /* range */
 
 async function getLtvRangeWhenMint(cdpID, collateralAmount, shareAmount) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await ltvRangeWhenMint_contract(_contract, cdpID, collateralAmount, shareAmount);
     return response;
 }
 
 async function getFoxsRangeWhenMint(cdpID, collateralAmount, ltv) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
     let response = await shareAmountRangeWhenMint_contract(_contract, getAccount(), cdpID, collateralAmount, ltv);
     return response;
 }
 
 async function getWethRangeWhenMint(cdpID, ltv, shareAmount) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
     let response = await collateralAmountRangeWhenMint_contract(_contract, getAccount(), cdpID, ltv, shareAmount);
     return response;
 }
 
 async function getLtvRangeWhenRedeem(cdpID, stableAmount) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await ltvRangeWhenRedeem_contract(_contract, cdpID, stableAmount);
     return response;
 }
 
 async function getFoxRangeWhenRedeem(cdpID) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
     let response = await stableAmountRangeWhenRedeem_contract(_contract, getAccount(), cdpID);
     return response;
 }
 
 async function getLtvRangeWhenBuyback(cdpID, shareAmount) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await ltvRangeWhenBuyback_contract(_contract, cdpID, shareAmount);
     return response;
 }
 
 async function getShareAmountRangeWhenBuyback(cdpID, shareAmount) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await shareAmountRangeWhenBuyback_contract(_contract, cdpID, shareAmount);
     return response;
 }
 
 async function getLtvRangeWhenRecollateralize(cdpID, collateralAmount) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '') return 0;
     let response = await ltvRangeWhenRecollateralize_contract(_contract, cdpID, collateralAmount);
     return response;
 }
 
 async function getWethRangeWhenRecollateralize(cdpID, ltv) {
-    let _contract = getContract("FOXFARM");
+    let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
     let response = await collateralAmountRangeWhenRecollateralize_contract(_contract, getAccount(), cdpID, ltv);
     return response;

@@ -23,7 +23,8 @@ export default {
   computed: {
     formattedWETH: {
       get() {
-        return ethers.utils.formatEther(this.weth);
+        let res = ethers.utils.formatEther(this.weth);
+        return (+res).toFixed(4);
       },
       set(value) {
         this.weth = ethers.utils.parseUnits(value, "ether");
@@ -31,7 +32,8 @@ export default {
     },
     formattedFOXS: {
       get() {
-        return ethers.utils.formatEther(this.foxs);
+        let res = ethers.utils.formatEther(this.foxs);
+        return (+res).toFixed(4);
       },
       set(value) {
         this.foxs = ethers.utils.parseUnits(value, "ether");
@@ -39,7 +41,8 @@ export default {
     },
     formattedFOX: {
       get() {
-        return ethers.utils.formatEther(this.fox);
+        let res = ethers.utils.formatEther(this.fox);
+        return (+res).toFixed(4);
       },
       set(value) {
         this.fox = ethers.utils.parseUnits(value, "ether");

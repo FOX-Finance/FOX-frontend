@@ -46,6 +46,7 @@ export default {
         this.weth_format = sValue;
         if (sValue === "") sValue = "0";
         this.weth = ethers.utils.parseUnits(sValue, "ether");
+        this.checkRange();
       },
     },
     formattedLTV: {
@@ -54,7 +55,9 @@ export default {
         return +(this.ltv / 100).toFixed(2);
       },
       set(value) {
+        console.log("set ltv!!", value);
         this.ltv = +(+value.toFixed(2) * 100).toFixed(2);
+        this.checkRange();
       },
     },
     formattedFOXS: {
@@ -178,8 +181,7 @@ export default {
       return getShareAmountInRecollateralize(this.cdp, this.weth, this.ltv).then(
         (result) => {
           console.log("getShareAmountInRecollateralize", result);
-          if (result) this.setFOXS(ethers.BigNumber.from(result.shareAmount_));
-          else this.setFOXS(ethers.BigNumber.from(0));
+          this.setFOXS(ethers.BigNumber.from(result));
         }
       );
     },
@@ -203,7 +205,7 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.ltv > upperBound ||
           this.ltv < lowerBound;
-        console.log(this.bLtvWrongRange, "LTV RANGE!!! ", upperBound, lowerBound);
+        console.log(this.bLtvWrongRange, "LTV RANGE!!! ", upperBound, lowerBound, this.ltv);
       });
     },
   },
@@ -294,7 +296,7 @@ export default {
           />
         </div>
       </div>
-      <div v-if="bWethWrongRangre || bLtvWrongRange" class="description">
+      <div v-if="bWethWrongRange || bLtvWrongRange" class="description">
         <span style="font-weight: bold; color: red">WRONG VALUE!</span>
       </div>
       <div v-else class="description">
