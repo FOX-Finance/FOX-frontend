@@ -75,14 +75,14 @@ export default {
   position: fixed;
   width: 100vw;
   height: 100vh;
-  opacity: 0.4;
-  background: rgb(226, 255, 181);
+  opacity: 0.5;
+  background: rgb(255, 221, 227);
   background: linear-gradient(
     90deg,
-    rgba(226, 255, 181, 1) 0%,
-    rgba(237, 218, 156, 1) 35%,
+    rgba(255, 221, 227, 1) 0%,
+    rgba(247, 232, 182, 1) 35%,
     rgba(241, 255, 191, 1) 68%,
-    rgba(224, 201, 131, 1) 100%
+    rgba(255, 221, 154, 1) 100%
   );
 }
 
