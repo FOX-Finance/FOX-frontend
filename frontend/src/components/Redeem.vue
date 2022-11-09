@@ -4,10 +4,13 @@ import {
   getAccount,
   approveMax,
   getAllowance,
-  //getCurrentLTVFromCDP,
+  getdefaultValuesRedeem,
+  getLtvRangeWhenRedeem,
+  getFoxRangeWhenRedeem,
   getRedeemAmount,
   redeem,
-  getBalance,
+  getTrustLevel,
+  getMaxLTV,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -26,6 +29,12 @@ export default {
       fox_format: "",
       weth_format: "",
       foxs_format: "",
+
+      bFoxWrongRange: false,
+      bLtvWrongRange: false,
+
+      trustLevel: 0,
+      maxLTV: 0,
     };
   },
   computed: {
@@ -85,6 +94,7 @@ export default {
       this.connected = true;
     }
 
+    this.updateValues();
     this.checkAllowance();
   },
   methods: {
@@ -93,6 +103,14 @@ export default {
         if (allowance_fox != 0) {
           this.approval_fox = true;
         }
+      });
+    },
+    updateValues: function () {
+      getTrustLevel().then((result) => {
+        this.trustLevel = +(result / 100).toFixed(2);
+      });
+      getMaxLTV().then((result) => {
+        this.maxLTV = +(result / 100).toFixed(2);
       });
     },
     connectOnClick: function () {
@@ -129,30 +147,82 @@ export default {
       });
     },
     changeCDP: function () {
-      // new => empty 리턴하도로 바꾼다함
-      /*
-      getCurrentLTVFromCDP(this.cdp).then((result) => {
-        this.ltv = result;
+      getdefaultValuesRedeem(this.cdp).then((result) => {
+        this.setFOX(result.stableAmount_);
+        this.setWETH(result.collateralAmount_);
+        this.ltv = result.ltv_;
+        this.setFOXS(result.shareAmount_);
       });
-      */
     },
-    inputFOX: function (event) {
-      getBalance("FOX").then((currentFOX) => {
-        let bWrongRange =
+    setFOX: function (bigint_) {
+      this.fox = ethers.BigNumber.from(bigint_);
+      this.fox_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+    },
+    setWETH: function (bigint_) {
+      this.weth = ethers.BigNumber.from(bigint_);
+      this.weth_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+    },
+    setFOXS: function (bigint_) {
+      this.foxs = ethers.BigNumber.from(bigint_);
+      this.foxs_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+    },
+    updateMaxFoxOnClick: async function () {
+      this.updateMaxFOX().then((result) => {
+        this.inputFOX();
+      });
+    },
+    updateMaxLtvOnClick: async function () {
+      this.updateMaxLTV().then((result) => {
+        this.inputLTV();
+      });
+    },
+    updateMaxFOX: async function () {
+      return getFoxRangeWhenRedeem(this.cdp).then((foxRange) => {
+        this.setFOX(foxRange.upperBound_);
+      });
+    },
+    updateMaxLTV: async function () {
+      return getLtvRangeWhenRedeem(this.cdp, this.fox).then((ltvRange) => {
+        this.ltv = ltvRange.upperBound_;
+      });
+    },
+    inputFOX: async function (event) {
+      this.updateWethAndFoxs().then((result) => {
+        this.checkRange(event);
+      });
+    },
+    inputLTV: async function (event) {
+      this.inputFOX(event);
+    },
+    updateWethAndFoxs: async function () {
+      return getRedeemAmount(this.cdp, this.fox, this.ltv).then((result) => {
+        console.log("getRedeemAmount", result)
+        this.setWETH(ethers.BigNumber.from(result.emittedCollateralAmount_));
+        this.setFOXS(ethers.BigNumber.from(result.emittedShareAmount_));
+      });
+    },
+    checkRange: async function (event) {
+      // Fox range check
+      getFoxRangeWhenRedeem(this.cdp).then((foxRange) => {
+        let upperBound = ethers.BigNumber.from(foxRange.upperBound_);
+        let lowerBound = ethers.BigNumber.from(foxRange.lowerBound_);
+        this.bFoxWrongRange =
           (event !== undefined && parseInt(event.target.value) < 0) ||
-          this.fox > currentFOX;
-        // TODO: bWorngRange => notify
-        // ..
-
-        getRedeemAmount(this.cdp, this.fox, this.ltv).then((result) => {
-          console.log("RESULT!", result[0]);
-          this.weth = ethers.BigNumber.from(result[0]);
-          this.foxs = ethers.BigNumber.from(result[1]);
-        });
+          this.fox.gt(upperBound) ||
+          this.fox.lt(lowerBound);
+        console.log(this.bFoxWrongRange, "FOX RANGE!!! ", upperBound, lowerBound);
       });
-    },
-    inputLTV: function () {
-      this.inputFOX();
+
+      // ltv range check
+      getLtvRangeWhenRedeem(this.cdp, this.fox).then((ltvRange) => {
+        let upperBound = ltvRange.upperBound_; // should be <=
+        let lowerBound = ltvRange.lowerBound_; // should be >
+        this.bLtvWrongRange =
+          (event !== undefined && parseInt(event.target.value) < 0) ||
+          this.ltv > upperBound ||
+          this.ltv < lowerBound;
+        console.log(this.bLtvWrongRange, "LTV RANGE!!! ", upperBound, lowerBound);
+      });
     },
   },
 };
@@ -206,11 +276,14 @@ export default {
         <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
       </div>
       <div class="uk-inline form-icon">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon"
+        <a
+          class="uk-form-icon uk-form-icon-flip input-form-icon"
+          @click="updateMaxFoxOnClick()"
           ><img src="../img/fox-icon.png" style="width: 20px" /><span>FOX</span>
         </a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
+          :class="{ wrong: bFoxWrongRange }"
           type="number"
           min="0"
           v-model="formattedFOX"
@@ -218,37 +291,48 @@ export default {
           :disabled="cdp === ''"
         />
       </div>
+      <div v-if="bFoxWrongRange" class="description wrap-top">
+        <span style="font-weight: bold; color: red">WRONG VALUE!</span>
+      </div>
+      <div v-else class="description wrap-top">
+        <span style="font-weight: bold">TRUST LEVEL:</span> {{ this.trustLevel }}%
+      </div>
       <div class="wrap">
         <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon"
-          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span></a
+          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>WETH</span></a
         >
         <input
           readonly
           class="uk-input result-form uk-form-width-medium uk-form-large"
           type="number"
           v-model="formattedWETH"
-          @input="inputWETH"
         />
       </div>
       <div class="wrap">
         <div class="uk-inline">
-          <a class="uk-form-icon uk-form-icon-flip input-form-icon"
+          <a
+            class="uk-form-icon uk-form-icon-flip input-form-icon"
+            @click="updateMaxLtvOnClick()"
             ><span>LTV(%)</span></a
           >
           <input
             class="uk-input input-form uk-form-width-medium uk-form-large"
+            :class="{ wrong: bLtvWrongRange }"
             type="number"
             v-model="formattedLTV"
-            @input="inputLTV"
+            @input="inputLTV($event)"
             :disabled="cdp === ''"
           />
         </div>
       </div>
-      <div class="description">
-        <span style="font-weight: bold">EXCHANGE RATES</span>USDC: $1.000
+      <div v-if="bLtvWrongRange" class="description">
+        <span style="font-weight: bold; color: red">WRONG VALUE!</span>
+      </div>
+      <div v-else class="description">
+        <span style="font-weight: bold">MAX LTV:</span> {{ this.maxLTV }}%
       </div>
       <div class="wrap">
         <span class="icon-circle" uk-icon="plus"></span>
@@ -262,7 +346,6 @@ export default {
           class="uk-input result-form uk-form-width-medium uk-form-large"
           type="number"
           v-model="formattedFOXS"
-          @input="inputFOXS"
         />
       </div>
       <hr />

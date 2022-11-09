@@ -3,7 +3,7 @@
  */
 import { ethers } from "ethers";
 import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract } from "./contract_request.js"
+import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
 const binanceRPCUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545';
@@ -213,6 +213,13 @@ async function getdefaultValuesMint(cdpID) {
     return response;
 }
 
+async function getdefaultValuesRedeem(cdpID) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await defaultValueRedeem_contract(_contract, getAccount(), cdpID);
+    return response;
+}
+
 async function getRedeemAmount(cdpID, stableAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
@@ -264,10 +271,17 @@ async function getWethRangeWhenMint(cdpID, ltv, shareAmount) {
     return response;
 }
 
-async function getLtvRangeWhenRedeem(cdpID, collectedStableAmount) {
+async function getLtvRangeWhenRedeem(cdpID, stableAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '') return 0;
-    let response = await ltvRangeWhenRedeem_contract(_contract, cdpID, collectedStableAmount);
+    let response = await ltvRangeWhenRedeem_contract(_contract, cdpID, stableAmount);
+    return response;
+}
+
+async function getFoxRangeWhenRedeem(cdpID) {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await stableAmountRangeWhenRedeem_contract(_contract, getAccount(), cdpID);
     return response;
 }
 
@@ -285,4 +299,4 @@ async function getShareAmountRangeWhenBuyback(cdpID, shareAmount) {
     return response;
 }
 
-export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getRedeemAmount, getCollateralAmount, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback };
+export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getdefaultValuesRedeem, getRedeemAmount, getCollateralAmount, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getFoxRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback };

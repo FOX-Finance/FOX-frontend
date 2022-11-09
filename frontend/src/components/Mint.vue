@@ -280,7 +280,6 @@ export default {
         console.log(this.bWethWrongRange, "WETH RANGE!!! ", upperBound, lowerBound);
       });
     },
-    updateMax: function () {},
   },
 };
 </script>

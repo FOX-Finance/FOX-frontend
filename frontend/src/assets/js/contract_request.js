@@ -75,6 +75,13 @@ async function defaultValuesMint_contract(_contract, _account, _id) {
     return response;
 }
 
+async function defaultValueRedeem_contract(_contract, _account, _id) {
+    console.log("-- [request] defaultValueRedeem", _id);
+    let response = await _contract.methods.defaultValueRedeem(_account, _id).call();
+    console.log("-- [response] defaultValueRedeem :", response);
+    return response;
+}
+
 async function expectedRedeemAmountToLtv_contract(_contract, _id, _stableAmount, _ltv) {
     console.log("-- [request] expectedRedeemAmountToLtv");
     let response = await _contract.methods.expectedRedeemAmountToLtv(_id, _stableAmount, _ltv).call();
@@ -127,10 +134,17 @@ async function collateralAmountRangeWhenMint_contract(_contract, _account, _id, 
     return response;
 }
 
-async function ltvRangeWhenRedeem_contract(_contract, _id, _collectedStableAmount) {
+async function ltvRangeWhenRedeem_contract(_contract, _id, stableAmount_) {
     console.log("-- [request] ltvRangeWhenRedeem");
-    let response = await _contract.methods.ltvRangeWhenRedeem(_id, _collectedStableAmount).call();
+    let response = await _contract.methods.ltvRangeWhenRedeem(_id, stableAmount_).call();
     console.log("-- [response] ltvRangeWhenRedeem :", response);
+    return response;
+}
+
+async function stableAmountRangeWhenRedeem_contract(_contract, _account, _id) {
+    console.log("-- [request] stableAmountRangeWhenRedeem");
+    let response = await _contract.methods.stableAmountRangeWhenRedeem(_account, _id).call();
+    console.log("-- [response] stableAmountRangeWhenRedeem :", response);
     return response;
 }
 
@@ -148,4 +162,4 @@ async function shareAmountRangeWhenBuyback_contract(_contract, _id, _shareAmount
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract };
+export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract };
