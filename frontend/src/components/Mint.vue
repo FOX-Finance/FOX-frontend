@@ -287,10 +287,10 @@ export default {
 
 <template>
   <div class="uk-width-1-1">
-    <div v-if="!connected" class="spinner-outer uk-width-1-1">
-      <div class="spinner-inner">
+    <div v-if="!connected" class="wallet-outer uk-width-1-1">
+      <div class="wallet-inner">
         <span uk-icon="icon: more; ratio: 3"></span>
-        <p>Connect to wallet first</p>
+        <p>Please connect to wallet</p>
       </div>
     </div>
     <div class="uk-width-1-1">
@@ -445,34 +445,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.spinner-outer {
-  z-index: 2;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.85);
-  border-radius: 25px;
-}
-
-.spinner-inner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -100px 0 0 -78px;
-}
-
-select {
-  text-align-last: left;
-  text-align: left;
-  -ms-text-align-last: left;
-  -moz-text-align-last: left;
-}
-
-.wrong {
-  border-color: red !important;
-}
-</style>
