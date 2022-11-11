@@ -6,7 +6,7 @@ import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CON
 import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
-const binanceRPCUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545';
+const binanceRPCUrl = 'https://data-seed-prebsc-1-s3.binance.org:8545/';
 const binanceBlockExploreUrl = 'https://testnet.bscscan.com';
 const localhostRPCUrl = 'http://localhost:8545';
 const localhostChainId = '0x7A69'; // 31337
@@ -44,12 +44,12 @@ async function connectMetamask() {
                 method: 'wallet_addEthereumChain',
                 params: [
                     {
-                        chainId: localhostChainId,
-                        chainName: 'Localhost 8545',
-                        rpcUrls: [localhostRPCUrl],
-                        //blockExplorerUrls: [],
+                        chainId: binanceTestChainId,
+                        chainName: 'Smart Chain - Testnet',
+                        rpcUrls: [binanceRPCUrl],
+                        blockExplorerUrls: [binanceBlockExploreUrl],
                         nativeCurrency: {
-                            symbol: 'LTBNB',
+                            symbol: 'BNB',
                             decimals: 18
                         }
                     }
@@ -60,7 +60,7 @@ async function connectMetamask() {
             try {
                 await provider.request({
                     method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: localhostChainId }],
+                    params: [{ chainId: binanceTestChainId }],
                 });
                 console.log("You have succefully switched to Binance Test network")
 

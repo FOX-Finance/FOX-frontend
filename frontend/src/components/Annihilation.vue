@@ -1,3 +1,13 @@
+<script>
+export default {
+  data() {
+    return {
+      cdp: ""
+    };
+  }
+}
+</script>
+
 <template>
   <div class="uk-width-1-1">
     <!--div v-if="!connected" class="wallet-outer uk-width-1-1">
@@ -23,10 +33,6 @@
             @change="changeCDP"
           >
             <option value="">Please select...</option>
-            <option value="0">CDP #0</option>
-            <option value="1">CDP #1</option>
-            <option value="2">CDP #2</option>
-            <option value="3">CDP #3</option>
           </select>
           <button
             class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
@@ -52,15 +58,8 @@
           type="number"
           v-model="formattedFOXS"
           @input="inputFOXS"
+          :disabled="cdp === ''"
         />
-      </div>
-      <hr class="custom-divider-vertical" />
-      <div class="description">
-        <span style="font-weight: bold">EXCHANGE RATES</span><br />
-        USDC: $1.000<br />
-        FXS: $6.015<br />
-        FRAX 0.3000% <br />
-        SWAP FEE (0.00000 USDC)
       </div>
       <div class="wrap">
         <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>

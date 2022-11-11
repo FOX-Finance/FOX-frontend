@@ -314,9 +314,6 @@ export default {
           >
             <option value="">Please select...</option>
             <option :value="ETHERS_MAX">Open</option>
-            <option value="0">CDP #0</option>
-            <option value="1">CDP #1</option>
-            <option value="2">CDP #2</option>
           </select>
           <button
             class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"

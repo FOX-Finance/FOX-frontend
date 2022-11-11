@@ -17,17 +17,6 @@
           type="number"
         />
       </div>
-      <div class="description wrap-top">
-        <span style="font-weight: bold">EXCHANGE RATES</span>USDC: $1.000
-      </div>
-      <hr class="custom-divider-vertical" />
-      <div class="description">
-        <span style="font-weight: bold">EXCHANGE RATES</span><br />
-        USDC: $1.000<br />
-        FXS: $6.015<br />
-        FRAX 0.3000% <br />
-        SWAP FEE (0.00000 USDC)
-      </div>
       <div class="wrap">
         <span
           class="icon-circle"
