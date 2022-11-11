@@ -55,7 +55,7 @@ export default {
         this.weth_format = sValue;
         if (sValue === "") sValue = "0";
         this.weth = ethers.utils.parseUnits(sValue, "ether");
-        this.checkRange();
+        //this.checkRange();
       },
     },
     formattedLTV: {
@@ -65,7 +65,7 @@ export default {
       },
       set(value) {
         this.ltv = +(+value.toFixed(2) * 100).toFixed(2);
-        this.checkRange();
+        //this.checkRange();
       },
     },
     formattedFOXS: {
@@ -78,7 +78,7 @@ export default {
         this.foxs_format = sValue;
         if (sValue === "") sValue = "0";
         this.foxs = ethers.utils.parseUnits(sValue, "ether");
-        this.checkRange();
+        //this.checkRange();
       },
     },
     formattedFOX: {
@@ -341,7 +341,7 @@ export default {
         <a
           class="uk-form-icon uk-form-icon-flip input-form-icon"
           @click="updateMaxWethOnClick()"
-          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>WETH</span>
+          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span>
         </a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"

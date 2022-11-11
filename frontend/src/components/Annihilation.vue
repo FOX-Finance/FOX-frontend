@@ -46,7 +46,7 @@
         <span class="icon-circle" uk-icon="icon: plus; ratio: 1;"></span>
       </div>
       <div class="uk-inline form-icon">
-        <a class="uk-form-icon uk-form-icon-flip input-form-icon"><span>PDC</span></a>
+        <a class="uk-form-icon uk-form-icon-flip input-form-icon"><span>PDC#</span></a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
           type="number"

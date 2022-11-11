@@ -46,7 +46,7 @@ export default {
         this.weth_format = sValue;
         if (sValue === "") sValue = "0";
         this.weth = ethers.utils.parseUnits(sValue, "ether");
-        this.checkRange();
+        //this.checkRange();
       },
     },
     formattedLTV: {
@@ -57,7 +57,7 @@ export default {
       set(value) {
         console.log("set ltv!!", value);
         this.ltv = +(+value.toFixed(2) * 100).toFixed(2);
-        this.checkRange();
+        //this.checkRange();
       },
     },
     formattedFOXS: {
@@ -175,7 +175,9 @@ export default {
       });
     },
     inputLTV: async function (event) {
-      this.inputWETH(event);
+      this.updateFoxs().then((result) => {
+        this.checkRange(event);
+      });
     },
     updateFoxs: async function () {
       return getShareAmountInRecollateralize(this.cdp, this.weth, this.ltv).then(
@@ -205,7 +207,13 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.ltv > upperBound ||
           this.ltv < lowerBound;
-        console.log(this.bLtvWrongRange, "LTV RANGE!!! ", upperBound, lowerBound, this.ltv);
+        console.log(
+          this.bLtvWrongRange,
+          "LTV RANGE!!! ",
+          upperBound,
+          lowerBound,
+          this.ltv
+        );
       });
     },
   },
@@ -267,7 +275,7 @@ export default {
         <a
           class="uk-form-icon uk-form-icon-flip input-form-icon"
           @click="updateMaxWethOnClick()"
-          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>WETH</span></a
+          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span></a
         >
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
