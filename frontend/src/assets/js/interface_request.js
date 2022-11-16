@@ -3,7 +3,7 @@
  */
 import { ethers } from "ethers";
 import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, GATEWAY_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI, GATEWAY_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract,ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract } from "./contract_request.js"
+import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract } from "./contract_request.js"
 const binanceTestChainId = '0x61';
 const binanceMainChainId = '0x56';
 const binanceRPCUrl = 'https://data-seed-prebsc-1-s3.binance.org:8545/';
@@ -39,44 +39,57 @@ async function connectMetamask() {
     // metamask installed
     const provider = window.ethereum;
     if (provider) {
+        // const chainId = await provider.request({ method: 'eth_chainId' });
         try {
             await provider.request({
-                method: 'wallet_addEthereumChain',
-                params: [
-                    {
-                        chainId: binanceTestChainId,
-                        chainName: 'Smart Chain - Testnet',
-                        rpcUrls: [binanceRPCUrl],
-                        blockExplorerUrls: [binanceBlockExploreUrl],
-                        nativeCurrency: {
-                            symbol: 'BNB',
-                            decimals: 18
-                        }
-                    }
-                ]
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: binanceTestChainId }],
             });
+            console.log("You have succefully switched to Binance Test network")
 
-            const chainId = await provider.request({ method: 'eth_chainId' });
-            try {
-                await provider.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: binanceTestChainId }],
-                });
-                console.log("You have succefully switched to Binance Test network")
+            // set global variables (contract, account)
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            account = accounts[0];
+            return true;
+        } catch (switchError) {
+            console.log("Failed to switch to the network");
 
-                // set global variables (contract, account)
-                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                account = accounts[0];
-                return true;
-            } catch (switchError) {
-                // This error code indicates that the chain has not been added to MetaMask.
-                if (switchError.code === 4902) {
+            // This error code indicates that the chain has not been added to MetaMask.
+            if (switchError.code === 4902) {
+                try {
                     console.log("This network is not available in your metamask, please add it");
+
+                    await provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                            {
+                                chainId: binanceTestChainId,
+                                chainName: 'Binance Smart Chain Testnet',
+                                rpcUrls: [binanceRPCUrl],
+                                blockExplorerUrls: [binanceBlockExploreUrl],
+                                nativeCurrency: {
+                                    symbol: 'tBNB',
+                                    decimals: 18
+                                }
+                            }
+                        ]
+                    });
+
+                    // connect
+                    await provider.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: binanceTestChainId }],
+                    });
+                    console.log("You have succefully switched to Binance Test network")
+
+                    // set global variables (contract, account)
+                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                    account = accounts[0];
+                    return true;
+                } catch (addError) {
+                    console.log(addError);
                 }
-                console.log("Failed to switch to the network");
             }
-        } catch (addError) {
-            console.log(addError);
         }
     }
     return false;
@@ -97,12 +110,12 @@ async function addTokenToMetamask(tokenName) {
                 params: {
                     type: 'ERC20',
                     options: {
-                      address: tokenContract._address,
-                      symbol: symbol,
-                      decimals: decimals,
-                      image: tokenImage,
+                        address: tokenContract._address,
+                        symbol: symbol,
+                        decimals: decimals,
+                        image: tokenImage,
                     },
-                  },
+                },
             });
             if (wasAdded) {
                 console.log('Thanks for your interest!');
