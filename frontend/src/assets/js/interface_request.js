@@ -1,6 +1,7 @@
 /*
  * Declarations
  */
+import detectEthereumProvider from '@metamask/detect-provider';
 import { ethers } from "ethers";
 import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, GATEWAY_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI, GATEWAY_CONTRACT_ABI } from "./contract.js"
 import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract } from "./contract_request.js"
@@ -37,7 +38,8 @@ async function connectContract() {
 
 async function connectMetamask() {
     // metamask installed
-    const provider = window.ethereum;
+    // const provider = window.ethereum;
+    const provider = await detectEthereumProvider();
     if (provider) {
         // const chainId = await provider.request({ method: 'eth_chainId' });
         try {
@@ -45,7 +47,7 @@ async function connectMetamask() {
                 method: 'wallet_switchEthereumChain',
                 params: [{ chainId: binanceTestChainId }],
             });
-            console.log("You have succefully switched to Binance Test network")
+            console.log("You have succefully switched to Binance Test network");
 
             // set global variables (contract, account)
             const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -80,7 +82,7 @@ async function connectMetamask() {
                         method: 'wallet_switchEthereumChain',
                         params: [{ chainId: binanceTestChainId }],
                     });
-                    console.log("You have succefully switched to Binance Test network")
+                    console.log("You have succefully switched to Binance Test network");
 
                     // set global variables (contract, account)
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -91,6 +93,9 @@ async function connectMetamask() {
                 }
             }
         }
+    } else {
+        // If window.ethereum is not found then MetaMask is not installed
+        alert('MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html');
     }
     return false;
 }
