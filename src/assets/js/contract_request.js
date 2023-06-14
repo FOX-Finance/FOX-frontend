@@ -55,6 +55,16 @@ async function faucet_foxs(_contract, _account, _amount) {
 
 /* Call */
 
+async function tokenIdsOfOwner(_contract, _address) {
+    const len = await _contract.balanceOf(_address);
+    let tokenIds = [];
+    for (let i = 0; i < len; i++) {
+        tokenIds.push(await _contract.tokenOfOwnerByIndex(_address, i));
+    }
+    console.log(">>> infos:", _contract.address, len, tokenIds);
+    return tokenIds;
+}
+
 async function allowance_contract(_contract, _account, _address) {
     console.log("-- [request] allowance");
     let response = await _contract.allowance(_account.getAddress(), _address);
@@ -216,4 +226,8 @@ async function collateralAmountRangeWhenRecollateralize_contract(_contract, _acc
     return response;
 }
 
-export { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract, faucet_weth, faucet_foxs };
+export {
+    approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract,
+    faucet_weth, faucet_foxs,
+    tokenIdsOfOwner
+};

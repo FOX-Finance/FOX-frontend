@@ -15,6 +15,7 @@ import {
   getLtvRangeWhenMint,
   getFoxsRangeWhenMint,
   getWethRangeWhenMint,
+  getTokenIdsOfOwner,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -25,6 +26,7 @@ export default {
       approval_weth: false,
       approval_foxs: false,
 
+      tokenIds: [],
       cdp: "",
       weth: ethers.BigNumber.from("0"),
       ltv: 0,
@@ -97,15 +99,18 @@ export default {
   mounted() {
     this.emitter.on("metamask-connect-event", (msg) => {
       this.connected = msg;
-      if (this.connected) this.checkAllowance();
+      if (this.connected) {
+        this.updateValues();
+        this.checkAllowance();
+      }
     });
 
     if (getAccount() !== "") {
       this.connected = true;
     }
 
-    this.updateValues();
-    this.checkAllowance();
+    // this.updateValues();
+    // this.checkAllowance();
   },
   methods: {
     checkAllowance: function () {
@@ -127,6 +132,9 @@ export default {
       });
       getMaxLTV().then((result) => {
         this.maxLTV = +(result / 100).toFixed(2);
+      });
+      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
+        this.tokenIds = tokenIds;
       });
     },
     connectOnClick: function () {
@@ -176,18 +184,27 @@ export default {
         this.setFOXS(result.shareAmount_);
         this.setFOX(result.stableAmount_);
       });
+      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
+        this.tokenIds = tokenIds;
+      });
     },
     setWETH: function (bigint_) {
       this.weth = ethers.BigNumber.from(bigint_);
-      this.weth_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+      this.weth_format = ethers.utils.formatEther(
+        ethers.BigNumber.from(bigint_)
+      );
     },
     setFOXS: function (bigint_) {
       this.foxs = ethers.BigNumber.from(bigint_);
-      this.foxs_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+      this.foxs_format = ethers.utils.formatEther(
+        ethers.BigNumber.from(bigint_)
+      );
     },
     setFOX: function (bigint_) {
       this.fox = ethers.BigNumber.from(bigint_);
-      this.fox_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+      this.fox_format = ethers.utils.formatEther(
+        ethers.BigNumber.from(bigint_)
+      );
     },
     updateMaxWethOnClick: async function () {
       this.updateMaxWETH().then((result) => {
@@ -205,19 +222,25 @@ export default {
       });
     },
     updateMaxWETH: async function () {
-      return getWethRangeWhenMint(this.cdp, this.ltv, this.foxs).then((wethRange) => {
-        this.setWETH(wethRange.upperBound_);
-      });
+      return getWethRangeWhenMint(this.cdp, this.ltv, this.foxs).then(
+        (wethRange) => {
+          this.setWETH(wethRange.upperBound_);
+        }
+      );
     },
     updateMaxLTV: async function () {
-      return getLtvRangeWhenMint(this.cdp, this.weth, this.foxs).then((ltvRange) => {
-        this.ltv = ltvRange.upperBound_;
-      });
+      return getLtvRangeWhenMint(this.cdp, this.weth, this.foxs).then(
+        (ltvRange) => {
+          this.ltv = ltvRange.upperBound_;
+        }
+      );
     },
     updateMaxFOXS: async function () {
-      return getFoxsRangeWhenMint(this.cdp, this.weth, this.ltv).then((foxsRange) => {
-        this.setFOXS(foxsRange.upperBound_);
-      });
+      return getFoxsRangeWhenMint(this.cdp, this.weth, this.ltv).then(
+        (foxsRange) => {
+          this.setFOXS(foxsRange.upperBound_);
+        }
+      );
     },
     inputWETH: async function (event) {
       this.updateFoxsAndFox().then((result) => {
@@ -235,22 +258,33 @@ export default {
     updateFoxsAndFox: async function () {
       return getShareAmount(this.cdp, this.weth, this.ltv).then((result) => {
         this.setFOXS(result);
-        getMintAmount(this.cdp, this.weth, this.ltv, this.foxs).then((mintResult) => {
-          this.setFOX(mintResult);
-        });
+        getMintAmount(this.cdp, this.weth, this.ltv, this.foxs).then(
+          (mintResult) => {
+            this.setFOX(mintResult);
+          }
+        );
       });
     },
     updateWethAndFox: async function () {
       return getDebtAmount(this.cdp, this.foxs, this.ltv).then((result) => {
         this.setWETH(result);
-        getMintAmount(this.cdp, this.weth, this.ltv, this.foxs).then((mintResult) => {
-          this.setFOX(mintResult);
-        });
+        getMintAmount(this.cdp, this.weth, this.ltv, this.foxs).then(
+          (mintResult) => {
+            this.setFOX(mintResult);
+          }
+        );
       });
     },
     checkRange: async function (event) {
       // ltv range check
-      console.log("Range Check CDP:", this.cdp, "weth : ", this.weth, "foxs:", this.foxs);
+      console.log(
+        "Range Check CDP:",
+        this.cdp,
+        "weth : ",
+        this.weth,
+        "foxs:",
+        this.foxs
+      );
       getLtvRangeWhenMint(this.cdp, this.weth, this.foxs).then((ltvRange) => {
         let upperBound = ltvRange.upperBound_; // should be <=
         let lowerBound = ltvRange.lowerBound_; // should be >
@@ -258,7 +292,12 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.ltv > upperBound ||
           this.ltv < lowerBound;
-        console.log(this.bLtvWrongRange, "LTV RANGE!!! ", upperBound, lowerBound);
+        console.log(
+          this.bLtvWrongRange,
+          "LTV RANGE!!! ",
+          upperBound,
+          lowerBound
+        );
       });
 
       // Foxs range check
@@ -269,7 +308,12 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.foxs.gt(upperBound) ||
           this.foxs.lt(lowerBound);
-        console.log(this.bFoxsWrongRange, "FOXS RANGE!!! ", upperBound, lowerBound);
+        console.log(
+          this.bFoxsWrongRange,
+          "FOXS RANGE!!! ",
+          upperBound,
+          lowerBound
+        );
       });
 
       // Weth range check
@@ -280,7 +324,12 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.weth.gt(upperBound) ||
           this.weth.lt(lowerBound);
-        console.log(this.bWethWrongRange, "WETH RANGE!!! ", upperBound, lowerBound);
+        console.log(
+          this.bWethWrongRange,
+          "WETH RANGE!!! ",
+          upperBound,
+          lowerBound
+        );
       });
     },
   },
@@ -312,8 +361,11 @@ export default {
             @change="changeCDP"
             :disabled="!connected"
           >
-            <option value="">Please select...</option>
-            <option :value="ETHERS_MAX">Open</option>
+            <!-- <option value="">Please select...</option> -->
+            <option v-for="tokenId in tokenIds" :key="tokenId" :value="tokenId">
+              {{ tokenId }}
+            </option>
+            <option :value="ETHERS_MAX">new</option>
           </select>
           <button
             class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
@@ -332,7 +384,10 @@ export default {
       </div>
 
       <div class="wrap">
-        <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+        <span
+          class="icon-circle"
+          uk-icon="icon: arrow-down; ratio: 1.5;"
+        ></span>
       </div>
       <div class="uk-inline form-icon">
         <a
@@ -398,10 +453,14 @@ export default {
         <span style="font-weight: bold; color: red">WRONG VALUE!</span>
       </div>
       <div v-else class="description wrap-top">
-        <span style="font-weight: bold">TRUST LEVEL:</span> {{ this.trustLevel }}%
+        <span style="font-weight: bold">TRUST LEVEL:</span>
+        {{ this.trustLevel }}%
       </div>
       <div class="wrap">
-        <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+        <span
+          class="icon-circle"
+          uk-icon="icon: arrow-down; ratio: 1.5;"
+        ></span>
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon">
