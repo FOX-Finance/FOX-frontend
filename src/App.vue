@@ -66,7 +66,7 @@ export default {
   position: fixed;
   width: 100vw;
   height: 100vh;
-  background-image: url(./img/img-noise-361x370.png);
+  background-image: url(/img/img-noise-361x370.png);
   background-repeat: repeat;
 }
 

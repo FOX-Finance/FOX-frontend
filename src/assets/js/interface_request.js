@@ -72,6 +72,7 @@ async function connectMetamask() {
             }
         }
 
+        await provider.send('eth_requestAccounts', []); // this promps user to connect metamask
         account = provider.getSigner();
         address = await provider.getSigner().getAddress();
         await connectContract();
