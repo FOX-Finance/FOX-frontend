@@ -11,6 +11,7 @@ import {
   redeem,
   getTrustLevel,
   getMaxLTV,
+  getTokenIdsOfOwner,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -20,6 +21,7 @@ export default {
       connected: false,
       approval_fox: false,
 
+      tokenIds: [],
       cdp: "",
       fox: ethers.BigNumber.from("0"),
       weth: ethers.BigNumber.from("0"),
@@ -89,15 +91,15 @@ export default {
   mounted() {
     this.emitter.on("metamask-connect-event", (msg) => {
       this.connected = msg;
-      if (this.connected) this.checkAllowance();
+      if (this.connected) {
+        this.updateValues();
+        this.checkAllowance();
+      }
     });
 
     if (getAccount() !== "") {
       this.connected = true;
     }
-
-    this.updateValues();
-    this.checkAllowance();
   },
   methods: {
     checkAllowance: function () {
@@ -113,6 +115,9 @@ export default {
       });
       getMaxLTV().then((result) => {
         this.maxLTV = +(result / 100).toFixed(2);
+      });
+      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
+        this.tokenIds = tokenIds;
       });
     },
     connectOnClick: function () {
@@ -158,15 +163,21 @@ export default {
     },
     setFOX: function (bigint_) {
       this.fox = ethers.BigNumber.from(bigint_);
-      this.fox_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+      this.fox_format = ethers.utils.formatEther(
+        ethers.BigNumber.from(bigint_)
+      );
     },
     setWETH: function (bigint_) {
       this.weth = ethers.BigNumber.from(bigint_);
-      this.weth_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+      this.weth_format = ethers.utils.formatEther(
+        ethers.BigNumber.from(bigint_)
+      );
     },
     setFOXS: function (bigint_) {
       this.foxs = ethers.BigNumber.from(bigint_);
-      this.foxs_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+      this.foxs_format = ethers.utils.formatEther(
+        ethers.BigNumber.from(bigint_)
+      );
     },
     updateMaxFoxOnClick: async function () {
       this.updateMaxFOX().then((result) => {
@@ -198,7 +209,7 @@ export default {
     },
     updateWethAndFoxs: async function () {
       return getRedeemAmount(this.cdp, this.fox, this.ltv).then((result) => {
-        console.log("getRedeemAmount", result)
+        console.log("getRedeemAmount", result);
         this.setWETH(ethers.BigNumber.from(result.emittedCollateralAmount_));
         this.setFOXS(ethers.BigNumber.from(result.emittedShareAmount_));
       });
@@ -212,7 +223,12 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.fox.gt(upperBound) ||
           this.fox.lt(lowerBound);
-        console.log(this.bFoxWrongRange, "FOX RANGE!!! ", upperBound, lowerBound);
+        console.log(
+          this.bFoxWrongRange,
+          "FOX RANGE!!! ",
+          upperBound,
+          lowerBound
+        );
       });
 
       // ltv range check
@@ -223,7 +239,12 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.ltv > upperBound ||
           this.ltv < lowerBound;
-        console.log(this.bLtvWrongRange, "LTV RANGE!!! ", upperBound, lowerBound);
+        console.log(
+          this.bLtvWrongRange,
+          "LTV RANGE!!! ",
+          upperBound,
+          lowerBound
+        );
       });
     },
   },
@@ -253,8 +274,12 @@ export default {
             aria-label="Custom controls"
             class="form-button uk-form-width-medium uk-form-large"
             @change="changeCDP"
+            :disabled="!connected"
           >
-            <option value="">Please select...</option>
+            <!-- <option value="">Please select...</option> -->
+            <option v-for="tokenId in tokenIds" :key="tokenId" :value="tokenId">
+              {{ tokenId }}
+            </option>
           </select>
           <button
             class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
@@ -271,7 +296,10 @@ export default {
         </div>
       </div>
       <div class="wrap">
-        <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+        <span
+          class="icon-circle"
+          uk-icon="icon: arrow-down; ratio: 1.5;"
+        ></span>
       </div>
       <div class="uk-inline form-icon">
         <a
@@ -293,14 +321,20 @@ export default {
         <span style="font-weight: bold; color: red">WRONG VALUE!</span>
       </div>
       <div v-else class="description wrap-top">
-        <span style="font-weight: bold">TRUST LEVEL:</span> {{ this.trustLevel }}%
+        <span style="font-weight: bold">TRUST LEVEL:</span>
+        {{ this.trustLevel }}%
       </div>
       <div class="wrap">
-        <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+        <span
+          class="icon-circle"
+          uk-icon="icon: arrow-down; ratio: 1.5;"
+        ></span>
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon"
-          ><img src="/img/bnb-icon.png" style="width: 20px" /><span>BNB</span></a
+          ><img src="/img/bnb-icon.png" style="width: 20px" /><span
+            >BNB</span
+          ></a
         >
         <input
           readonly
@@ -337,7 +371,9 @@ export default {
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon"
-          ><img src="/img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
+          ><img src="/img/foxs-icon.png" style="width: 20px" /><span
+            >FOXS</span
+          ></a
         >
         <input
           readonly

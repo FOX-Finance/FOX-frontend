@@ -61,7 +61,6 @@ async function tokenIdsOfOwner(_contract, _address) {
     for (let i = 0; i < len; i++) {
         tokenIds.push(await _contract.tokenOfOwnerByIndex(_address, i));
     }
-    console.log(">>> infos:", _contract.address, len, tokenIds);
     return tokenIds;
 }
 

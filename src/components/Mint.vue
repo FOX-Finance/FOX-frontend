@@ -108,9 +108,6 @@ export default {
     if (getAccount() !== "") {
       this.connected = true;
     }
-
-    // this.updateValues();
-    // this.checkAllowance();
   },
   methods: {
     checkAllowance: function () {
