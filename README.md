@@ -1,1 +1,1 @@
-# FOX-frontend
+# FOX-Finance WebApp
