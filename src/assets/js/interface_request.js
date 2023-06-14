@@ -1,19 +1,26 @@
-/*
- * Declarations
- */
-import detectEthereumProvider from '@metamask/detect-provider';
-import { ethers } from "ethers";
 import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, GATEWAY_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI, GATEWAY_CONTRACT_ABI } from "./contract.js"
-import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract } from "./contract_request.js"
-const binanceTestChainId = '0x61';
-const binanceMainChainId = '0x56';
-const binanceRPCUrl = 'https://data-seed-prebsc-1-s3.binance.org:8545/';
-const binanceBlockExploreUrl = 'https://testnet.bscscan.com';
-const localhostRPCUrl = 'http://localhost:8545';
-const localhostChainId = '0x7A69'; // 31337
+import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract, faucet_weth, faucet_foxs } from "./contract_request.js"
+
+import { ethers } from "ethers";
+let provider = new ethers.providers.Web3Provider(window.ethereum);
+
+// TODO
+// localhost
+const targetChainId = '0x539';
+const rpcUrl = "http://localhost:8545";
+const chainName = "localhost";
+const nativeCurrency = { name: "LocalCoin", decimals: 18, symbol: "LCC" };
+// // FIL-test
+// const targetChainId = '0x4CB2F';
+// const rpcUrl = "https://api.calibration.node.glif.io/rpc/v1";
+// const chainName = "Cailbration";
+// const nativeCurrency = { name: "Filecoin", decimals: 18, symbol: "FIL" };
+
 const ETHERS_MAX = ethers.constants.MaxUint256;
 
 let account = '';
+let address = '';
+
 let contract_fox = '';
 let contract_foxfarm = '';
 let contract_weth = '';
@@ -26,75 +33,51 @@ let contract_gateway = '';
  */
 async function connectContract() {
     console.log("connect to contract!");
-    window.web3 = new Web3(window.ethereum);
-    contract_fox = await new window.web3.eth.Contract(FOX_CONTRACT_ABI, FOX_CONTRACT_ADDR);
-    contract_foxfarm = await new window.web3.eth.Contract(FOXFARM_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR);
-    contract_weth = await new window.web3.eth.Contract(WETH_CONTRACT_ABI, WETH_CONTRACT_ADDR);
-    contract_foxs = await new window.web3.eth.Contract(FOXS_CONTRACT_ABI, FOXS_CONTRACT_ADDR);
-    contract_sin = await new window.web3.eth.Contract(SIN_CONTRACT_ABI, SIN_CONTRACT_ADDR);
-    contract_gateway = await new window.web3.eth.Contract(GATEWAY_CONTRACT_ABI, GATEWAY_CONTRACT_ADDR);
+    contract_fox = new ethers.Contract(FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, provider);
+    contract_foxfarm = new ethers.Contract(FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, provider);
+    contract_weth = new ethers.Contract(WETH_CONTRACT_ADDR, WETH_CONTRACT_ABI, provider);
+    contract_foxs = new ethers.Contract(FOXS_CONTRACT_ADDR, FOXS_CONTRACT_ABI, provider);
+    contract_sin = new ethers.Contract(SIN_CONTRACT_ADDR, SIN_CONTRACT_ABI, provider);
+    contract_gateway = new ethers.Contract(GATEWAY_CONTRACT_ADDR, GATEWAY_CONTRACT_ABI, provider);
     console.log("connect to contract done.");
 }
 
 async function connectMetamask() {
-    // metamask installed
-    // const provider = window.ethereum;
-    const provider = await detectEthereumProvider();
     if (provider) {
-        // const chainId = await provider.request({ method: 'eth_chainId' });
-        try {
-            await provider.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: binanceTestChainId }],
-            });
-            console.log("You have succefully switched to Binance Test network");
+        const { chainId } = await provider.getNetwork()
 
-            // set global variables (contract, account)
-            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            account = accounts[0];
-            return true;
-        } catch (switchError) {
-            console.log("Failed to switch to the network");
+        if (chainId != targetChainId) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: targetChainId }]
+                });
 
-            // This error code indicates that the chain has not been added to MetaMask.
-            if (switchError.code === 4902) {
-                try {
-                    console.log("This network is not available in your metamask, please add it");
-
-                    await provider.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [
-                            {
-                                chainId: binanceTestChainId,
-                                chainName: 'Binance Smart Chain Testnet',
-                                rpcUrls: [binanceRPCUrl],
-                                blockExplorerUrls: [binanceBlockExploreUrl],
-                                nativeCurrency: {
-                                    symbol: 'tBNB',
-                                    decimals: 18
-                                }
-                            }
-                        ]
+            } catch (e) {
+                if (e.code === 4902) {
+                    await window.ethereum.request({
+                        method: "wallet_addEthereumChain",
+                        params: [{
+                            chainId: targetChainId,
+                            chainName: chainName,
+                            rpcUrls: [rpcUrl],
+                            nativeCurrency: nativeCurrency,
+                        }],
                     });
-
-                    // connect
-                    await provider.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: binanceTestChainId }],
-                    });
-                    console.log("You have succefully switched to Binance Test network");
-
-                    // set global variables (contract, account)
-                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                    account = accounts[0];
-                    return true;
-                } catch (addError) {
-                    console.log(addError);
+                } else {
+                    console.error("Fail to switch network");
                 }
+            } finally {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
             }
         }
+
+        account = provider.getSigner();
+        address = await provider.getSigner().getAddress();
+        await connectContract();
+
+        return true;
     } else {
-        // If window.ethereum is not found then MetaMask is not installed
         alert('MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html');
     }
     return false;
@@ -102,30 +85,32 @@ async function connectMetamask() {
 
 async function addTokenToMetamask(tokenName) {
     const tokenContract = getContract(tokenName);
-    const symbol = await tokenContract.methods.symbol().call();
-    const decimals = await tokenContract.methods.decimals().call();
+    const symbol = await tokenContract.symbol();
+    const decimals = await tokenContract.decimals();
     const tokenImage = getContractImg(tokenName);
 
-    const provider = window.ethereum;
+    const options = {
+        address: tokenContract.address,
+        symbol: symbol,
+        decimals: decimals,
+        image: tokenImage,
+    }
+    console.log(options);
+
     if (provider) {
         try {
             // wasAdded is a boolean. Like any RPC method, an error may be thrown.
-            const wasAdded = await provider.request({
+            const wasAdded = await window.ethereum.request({
                 method: 'wallet_watchAsset',
                 params: {
                     type: 'ERC20',
-                    options: {
-                        address: tokenContract._address,
-                        symbol: symbol,
-                        decimals: decimals,
-                        image: tokenImage,
-                    },
+                    options: options,
                 },
             });
             if (wasAdded) {
-                console.log('Thanks for your interest!');
+                console.log('Token successfully added to wallet!');
             } else {
-                console.log('Your loss!');
+                throw new Error('Something went wrong.');
             }
         } catch (error) {
             console.log(error);
@@ -134,7 +119,7 @@ async function addTokenToMetamask(tokenName) {
 }
 
 function getAccount() {
-    return account;
+    return address;
 }
 
 function getContract(contractName) {
@@ -146,6 +131,7 @@ function getContract(contractName) {
     else if (contractName === "GATEWAY") return contract_gateway;
 }
 
+// TODO: BNB -> ETH
 function getContractImg(contractName) {
     if (contractName === "WETH") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/bnb-icon.png?raw=true';
     else if (contractName === "FOXS") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/foxs-icon.png?raw=true';
@@ -166,35 +152,51 @@ async function approveMax(contractName) {
     let _contract = getContract(contractName);
     let _address = getApproveAddress(contractName);
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await approveMax_contract(_contract, getAccount(), _address);
+    let response = await approveMax_contract(_contract, account, _address);
     return response;
 }
 
 async function openAndDepositAndBorrow(depositAmount, borrowAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await openAndDepositAndBorrow_contract(_contract, getAccount(), depositAmount, borrowAmount);
+    let response = await openAndDepositAndBorrow_contract(_contract, account, depositAmount, borrowAmount);
     return response;
 }
 
 async function redeem(cdpID, repayAmount, withdrawAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await RepayAndWithdraw_contract(_contract, getAccount(), cdpID, repayAmount, withdrawAmount);
+    let response = await RepayAndWithdraw_contract(_contract, account, cdpID, repayAmount, withdrawAmount);
     return response;
 }
 
 async function buyback(cdpID, shareAmount) {
     let _contract = getContract("FOXFARM");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await buybackRepayDebt_contract(_contract, getAccount(), cdpID, shareAmount);
+    let response = await buybackRepayDebt_contract(_contract, account, cdpID, shareAmount);
     return response;
 }
 
 async function recollateralize(cdpID, collateralAmount, ltv) {
     let _contract = getContract("FOXFARM");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await recollateralize_contract(_contract, getAccount(), cdpID, collateralAmount, ltv);
+    let response = await recollateralize_contract(_contract, account, cdpID, collateralAmount, ltv);
+    return response;
+}
+
+/* faucet */
+
+async function getFaucetWeth() {
+    let _contract = getContract("WETH");
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await faucet_weth(_contract, account, ethers.BigNumber.from(10).pow(18).mul(100));
+    return response;
+}
+
+async function getFaucetFoxs() {
+    let _contract = getContract("FOXS");
+    if (_contract === '' || getAccount() === '') return 0;
+    let response = await faucet_foxs(_contract, account, ethers.BigNumber.from(10).pow(18).mul(100));
     return response;
 }
 
@@ -203,7 +205,7 @@ async function recollateralize(cdpID, collateralAmount, ltv) {
 async function getBalance(contractName) {
     let _contract = getContract(contractName);
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await balanceOf_contract(_contract, getAccount());
+    let response = await balanceOf_contract(_contract, account);
     return ethers.BigNumber.from(response);
 }
 
@@ -211,7 +213,7 @@ async function getAllowance(contractName) {
     let _contract = getContract(contractName);
     let _address = getApproveAddress(contractName);
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await allowance_contract(_contract, getAccount(), _address);
+    let response = await allowance_contract(_contract, account, _address);
     return ethers.BigNumber.from(response);
 }
 
@@ -239,21 +241,21 @@ async function getMintAmount(cdpID, collateralAmount, ltv, shareAmount) {
 async function getdefaultValuesMint(cdpID) {
     let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await defaultValuesMint_contract(_contract, getAccount(), cdpID);
+    let response = await defaultValuesMint_contract(_contract, account, cdpID);
     return response;
 }
 
 async function getdefaultValuesRedeem(cdpID) {
     let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await defaultValueRedeem_contract(_contract, getAccount(), cdpID);
+    let response = await defaultValueRedeem_contract(_contract, account, cdpID);
     return response;
 }
 
 async function getdefaultValuesRecollateralize(cdpID) {
     let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await defaultValuesRecollateralize_contract(_contract, getAccount(), cdpID);
+    let response = await defaultValuesRecollateralize_contract(_contract, account, cdpID);
     return response;
 }
 
@@ -304,14 +306,14 @@ async function getLtvRangeWhenMint(cdpID, collateralAmount, shareAmount) {
 async function getFoxsRangeWhenMint(cdpID, collateralAmount, ltv) {
     let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await shareAmountRangeWhenMint_contract(_contract, getAccount(), cdpID, collateralAmount, ltv);
+    let response = await shareAmountRangeWhenMint_contract(_contract, account, cdpID, collateralAmount, ltv);
     return response;
 }
 
 async function getWethRangeWhenMint(cdpID, ltv, shareAmount) {
     let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await collateralAmountRangeWhenMint_contract(_contract, getAccount(), cdpID, ltv, shareAmount);
+    let response = await collateralAmountRangeWhenMint_contract(_contract, account, cdpID, ltv, shareAmount);
     return response;
 }
 
@@ -325,7 +327,7 @@ async function getLtvRangeWhenRedeem(cdpID, stableAmount) {
 async function getFoxRangeWhenRedeem(cdpID) {
     let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await stableAmountRangeWhenRedeem_contract(_contract, getAccount(), cdpID);
+    let response = await stableAmountRangeWhenRedeem_contract(_contract, account, cdpID);
     return response;
 }
 
@@ -353,8 +355,8 @@ async function getLtvRangeWhenRecollateralize(cdpID, collateralAmount) {
 async function getWethRangeWhenRecollateralize(cdpID, ltv) {
     let _contract = getContract("GATEWAY");
     if (_contract === '' || getAccount() === '') return 0;
-    let response = await collateralAmountRangeWhenRecollateralize_contract(_contract, getAccount(), cdpID, ltv);
+    let response = await collateralAmountRangeWhenRecollateralize_contract(_contract, account, cdpID, ltv);
     return response;
 }
 
-export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, recollateralize, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getdefaultValuesRedeem, getdefaultValuesRecollateralize, getRedeemAmount, getCollateralAmount, getShareAmountInRecollateralize, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getFoxRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback, getLtvRangeWhenRecollateralize, getWethRangeWhenRecollateralize };
+export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, recollateralize, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getdefaultValuesRedeem, getdefaultValuesRecollateralize, getRedeemAmount, getCollateralAmount, getShareAmountInRecollateralize, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getFoxRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback, getLtvRangeWhenRecollateralize, getWethRangeWhenRecollateralize, getFaucetWeth, getFaucetFoxs };

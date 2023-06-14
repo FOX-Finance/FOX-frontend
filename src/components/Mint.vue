@@ -338,7 +338,7 @@ export default {
         <a
           class="uk-form-icon uk-form-icon-flip input-form-icon"
           @click="updateMaxWethOnClick()"
-          ><img src="../img/bnb-icon.png" style="width: 20px" /><span>BNB</span>
+          ><img src="/img/bnb-icon.png" style="width: 20px" /><span>BNB</span>
         </a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
@@ -382,7 +382,7 @@ export default {
           class="uk-form-icon uk-form-icon-flip input-form-icon"
           @click="updateMaxFoxsOnClick()"
         >
-          <img src="../img/foxs-icon.png" style="width: 20px" />
+          <img src="/img/foxs-icon.png" style="width: 20px" />
           <span>FOXS</span>
         </a>
         <input
@@ -405,7 +405,7 @@ export default {
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon">
-          <img src="../img/fox-icon.png" style="width: 20px" />
+          <img src="/img/fox-icon.png" style="width: 20px" />
           <span>FOX</span>
         </a>
         <input

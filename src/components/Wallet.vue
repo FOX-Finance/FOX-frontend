@@ -2,10 +2,13 @@
 import {
   connectMetamask,
   addTokenToMetamask,
+  getFaucetWeth,
+  getFaucetFoxs,
   getAccount,
   getBalance,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
+import { faucet_foxs, faucet_weth } from "../assets/js/contract_request.js";
 export default {
   data() {
     return {
@@ -24,7 +27,7 @@ export default {
     formattedWETH: {
       get() {
         let res = ethers.utils.formatEther(this.weth);
-        return (+res).toFixed(4);
+        return (+res).toFixed(3);
       },
       set(value) {
         this.weth = ethers.utils.parseUnits(value, "ether");
@@ -33,7 +36,7 @@ export default {
     formattedFOXS: {
       get() {
         let res = ethers.utils.formatEther(this.foxs);
-        return (+res).toFixed(4);
+        return (+res).toFixed(3);
       },
       set(value) {
         this.foxs = ethers.utils.parseUnits(value, "ether");
@@ -42,7 +45,7 @@ export default {
     formattedFOX: {
       get() {
         let res = ethers.utils.formatEther(this.fox);
-        return (+res).toFixed(4);
+        return (+res).toFixed(3);
       },
       set(value) {
         this.fox = ethers.utils.parseUnits(value, "ether");
@@ -96,8 +99,17 @@ export default {
       });
       console.log("UpdateBalance!");
     },
-    addToken: function (tokenName) {
-      addTokenToMetamask(tokenName);
+    faucet: function (tokenName) {
+      if (tokenName === "WETH") {
+        getFaucetWeth();
+      } else if (tokenName === "FOXS") {
+        getFaucetFoxs();
+      }
+    },
+    addToken: async function () {
+      await addTokenToMetamask("WETH");
+      await addTokenToMetamask("FOXS");
+      await addTokenToMetamask("FOX");
     },
   },
 };
@@ -105,26 +117,45 @@ export default {
 
 <template>
   <div class="width-1-1-medium">
-    <button class="width-1-1-medium uk-button wallet-button" @click="connectOnClick">
+    <button
+      class="width-1-1-medium uk-button wallet-button"
+      @click="connectOnClick"
+    >
       <span style="display: block; overflow: hidden; text-overflow: ellipsis">{{
         btnText
       }}</span>
     </button>
     <div class="uk-text-center wrap-top" uk-grid>
-      <button class="uk-width-1-3 uk-button balance-button" @click="addToken('WETH')">
+      <button
+        class="uk-width-1-4 uk-button balance-button"
+        @click="faucet('WETH')"
+      >
         <span style="display: block; overflow: hidden; text-overflow: ellipsis">
-          <img src="../img/bnb-icon.png" style="width: 20px" /> {{ formattedWETH }}</span
+          <img src="/img/bnb-icon.png" style="width: 20px" />
+          {{ formattedWETH }}</span
         >
       </button>
-      <button class="uk-width-1-3 uk-button balance-button" @click="addToken('FOXS')">
+      <button
+        class="uk-width-1-4 uk-button balance-button"
+        @click="faucet('FOXS')"
+      >
         <span class="balance-text">
-          <img src="../img/foxs-icon.png" style="width: 20px" />
+          <img src="/img/foxs-icon.png" style="width: 20px" />
           {{ formattedFOXS }}</span
         >
       </button>
-      <button class="uk-width-1-3 uk-button balance-button" @click="addToken('FOX')">
+      <button
+        class="uk-width-1-4 uk-button balance-button"
+        @click="faucet('FOX')"
+      >
         <span style="display: block; overflow: hidden; text-overflow: ellipsis">
-          <img src="../img/fox-icon.png" style="width: 20px" /> {{ formattedFOX }}</span
+          <img src="/img/fox-icon.png" style="width: 20px" />
+          {{ formattedFOX }}</span
+        >
+      </button>
+      <button class="uk-width-1-4 uk-button balance-button" @click="addToken()">
+        <span style="display: block; overflow: hidden; text-overflow: ellipsis"
+          >+ Tokens</span
         >
       </button>
     </div>
