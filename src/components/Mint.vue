@@ -97,6 +97,11 @@ export default {
     },
   },
   mounted() {
+    try {
+      this.updateValues();
+      this.checkAllowance();
+    } catch (e) {}
+
     this.emitter.on("metamask-connect-event", (msg) => {
       this.connected = msg;
       if (this.connected) {

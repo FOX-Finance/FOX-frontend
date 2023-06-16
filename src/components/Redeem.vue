@@ -89,6 +89,11 @@ export default {
     },
   },
   mounted() {
+    try {
+      this.updateValues();
+      this.checkAllowance();
+    } catch (e) {}
+
     this.emitter.on("metamask-connect-event", (msg) => {
       this.connected = msg;
       if (this.connected) {
@@ -104,6 +109,7 @@ export default {
   methods: {
     checkAllowance: function () {
       getAllowance("FOX").then((allowance_fox) => {
+        console.log("allowance_fox", allowance_fox);
         if (allowance_fox != 0) {
           this.approval_fox = true;
         }
