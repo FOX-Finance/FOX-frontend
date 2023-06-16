@@ -5,16 +5,16 @@ import { ethers } from "ethers";
 let provider = new ethers.providers.Web3Provider(window.ethereum);
 
 // TODO
-// localhost
-const targetChainId = '0x539';
-const rpcUrl = "http://localhost:8545";
-const chainName = "localhost";
-const nativeCurrency = { name: "LocalCoin", decimals: 18, symbol: "LCC" };
-// // FIL-test
-// const targetChainId = '0x4CB2F';
-// const rpcUrl = "https://api.calibration.node.glif.io/rpc/v1";
-// const chainName = "Cailbration";
-// const nativeCurrency = { name: "Filecoin", decimals: 18, symbol: "FIL" };
+// // localhost
+// const targetChainId = '0x539';
+// const rpcUrl = "http://localhost:8545";
+// const chainName = "localhost";
+// const nativeCurrency = { name: "LocalCoin", decimals: 18, symbol: "LCC" };
+// FIL-test
+const targetChainId = '0x4CB2F';
+const rpcUrl = "https://api.calibration.node.glif.io/rpc/v1";
+const chainName = "Cailbration";
+const nativeCurrency = { name: "Filecoin", decimals: 18, symbol: "FIL" };
 
 const ETHERS_MAX = ethers.constants.MaxUint256;
 
