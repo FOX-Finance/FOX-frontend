@@ -338,8 +338,8 @@ export default {
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon"
-          ><img src="/img/bnb-icon.png" style="width: 20px" /><span
-            >BNB</span
+          ><img src="/img/fil-icon.png" style="width: 20px" /><span
+            >FIL</span
           ></a
         >
         <input

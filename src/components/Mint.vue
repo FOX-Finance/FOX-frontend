@@ -395,7 +395,7 @@ export default {
         <a
           class="uk-form-icon uk-form-icon-flip input-form-icon"
           @click="updateMaxWethOnClick()"
-          ><img src="/img/bnb-icon.png" style="width: 20px" /><span>BNB</span>
+          ><img src="/img/fil-icon.png" style="width: 20px" /><span>FIL</span>
         </a>
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"

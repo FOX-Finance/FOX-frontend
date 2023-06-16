@@ -12,6 +12,9 @@ import { faucet_foxs, faucet_weth } from "../assets/js/contract_request.js";
 export default {
   data() {
     return {
+      showWethFaucetText: false,
+      showFoxsFaucetText: false,
+
       connected: false,
       btnText: "Connect to wallet",
       btnTooltip: "Connect to wallet",
@@ -129,20 +132,24 @@ export default {
       <button
         class="uk-width-1-4 uk-button balance-button"
         @click="faucet('WETH')"
+        @mouseover="showWethFaucetText = true"
+        @mouseout="showWethFaucetText = false"
       >
         <span style="display: block; overflow: hidden; text-overflow: ellipsis">
-          <img src="/img/bnb-icon.png" style="width: 20px" />
-          {{ formattedWETH }}</span
-        >
+          <img src="/img/fil-icon.png" style="width: 20px" />
+          {{ showWethFaucetText ? "Faucet" : formattedWETH }}
+        </span>
       </button>
       <button
         class="uk-width-1-4 uk-button balance-button"
         @click="faucet('FOXS')"
+        @mouseover="showFoxsFaucetText = true"
+        @mouseout="showFoxsFaucetText = false"
       >
         <span class="balance-text">
           <img src="/img/foxs-icon.png" style="width: 20px" />
-          {{ formattedFOXS }}</span
-        >
+          {{ showFoxsFaucetText ? "Faucet" : formattedFOXS }}
+        </span>
       </button>
       <button
         class="uk-width-1-4 uk-button balance-button"

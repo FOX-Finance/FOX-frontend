@@ -132,9 +132,8 @@ function getContract(contractName) {
     else if (contractName === "GATEWAY") return contract_gateway;
 }
 
-// TODO: BNB -> ETH
 function getContractImg(contractName) {
-    if (contractName === "WETH") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/bnb-icon.png?raw=true';
+    if (contractName === "WETH") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/fil-icon.png?raw=true';
     else if (contractName === "FOXS") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/foxs-icon.png?raw=true';
     else if (contractName === "FOX") return 'https://github.com/FOX-Finance/FOX-frontend/blob/main/frontend/src/img/fox-icon.png?raw=true';
 }
