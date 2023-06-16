@@ -36,7 +36,7 @@
       </div>
       <hr />
       <button class="uk-button uk-button-default uk-button-large form-button">
-        Connect Wallet
+        Coupon
       </button>
     </div>
   </div>

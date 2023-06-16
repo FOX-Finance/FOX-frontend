@@ -11,6 +11,7 @@ import {
   recollateralize,
   getTrustLevel,
   getMaxLTV,
+  getTokenIdsOfOwner,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -20,6 +21,7 @@ export default {
       connected: false,
       approval_weth: false,
 
+      tokenIds: [],
       cdp: "",
       weth: ethers.BigNumber.from("0"),
       ltv: 0,
@@ -74,17 +76,22 @@ export default {
     },
   },
   mounted() {
+    try {
+      this.updateValues();
+      this.checkAllowance();
+    } catch (e) {}
+
     this.emitter.on("metamask-connect-event", (msg) => {
       this.connected = msg;
-      if (this.connected) this.checkAllowance();
+      if (this.connected) {
+        this.updateValues();
+        this.checkAllowance();
+      }
     });
 
     if (getAccount() !== "") {
       this.connected = true;
     }
-
-    this.updateValues();
-    this.checkAllowance();
   },
   methods: {
     checkAllowance: function () {
@@ -100,6 +107,9 @@ export default {
       });
       getMaxLTV().then((result) => {
         this.maxLTV = +(result / 100).toFixed(2);
+      });
+      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
+        this.tokenIds = tokenIds;
       });
     },
     connectOnClick: function () {
@@ -143,11 +153,15 @@ export default {
     },
     setWETH: function (bigint_) {
       this.weth = ethers.BigNumber.from(bigint_);
-      this.weth_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+      this.weth_format = ethers.utils.formatEther(
+        ethers.BigNumber.from(bigint_)
+      );
     },
     setFOXS: function (bigint_) {
       this.foxs = ethers.BigNumber.from(bigint_);
-      this.foxs_format = ethers.utils.formatEther(ethers.BigNumber.from(bigint_));
+      this.foxs_format = ethers.utils.formatEther(
+        ethers.BigNumber.from(bigint_)
+      );
     },
     updateMaxWethOnClick: async function () {
       this.updateMaxWETH().then((result) => {
@@ -160,14 +174,18 @@ export default {
       });
     },
     updateMaxWETH: async function () {
-      return getWethRangeWhenRecollateralize(this.cdp, this.ltv).then((wethRange) => {
-        this.setWETH(wethRange.upperBound_);
-      });
+      return getWethRangeWhenRecollateralize(this.cdp, this.ltv).then(
+        (wethRange) => {
+          this.setWETH(wethRange.upperBound_);
+        }
+      );
     },
     updateMaxLTV: async function () {
-      return getLtvRangeWhenRecollateralize(this.cdp, this.weth).then((ltvRange) => {
-        this.ltv = ltvRange.upperBound_;
-      });
+      return getLtvRangeWhenRecollateralize(this.cdp, this.weth).then(
+        (ltvRange) => {
+          this.ltv = ltvRange.upperBound_;
+        }
+      );
     },
     inputWETH: async function (event) {
       this.updateFoxs().then((result) => {
@@ -180,12 +198,14 @@ export default {
       });
     },
     updateFoxs: async function () {
-      return getShareAmountInRecollateralize(this.cdp, this.weth, this.ltv).then(
-        (result) => {
-          console.log("getShareAmountInRecollateralize", result);
-          this.setFOXS(ethers.BigNumber.from(result));
-        }
-      );
+      return getShareAmountInRecollateralize(
+        this.cdp,
+        this.weth,
+        this.ltv
+      ).then((result) => {
+        console.log("getShareAmountInRecollateralize", result);
+        this.setFOXS(ethers.BigNumber.from(result));
+      });
     },
     checkRange: async function (event) {
       // Weth range check
@@ -196,7 +216,12 @@ export default {
           (event !== undefined && parseInt(event.target.value) < 0) ||
           this.weth.gt(upperBound) ||
           this.weth.lt(lowerBound);
-        console.log(this.bWethWrongRange, "WETH RANGE!!! ", upperBound, lowerBound);
+        console.log(
+          this.bWethWrongRange,
+          "WETH RANGE!!! ",
+          upperBound,
+          lowerBound
+        );
       });
 
       // ltv range check
@@ -243,8 +268,11 @@ export default {
             aria-label="Custom controls"
             class="form-button uk-form-width-medium uk-form-large"
             @change="changeCDP"
+            :disabled="!connected"
           >
-            <option value="">Please select...</option>
+            <option v-for="tokenId in tokenIds" :key="tokenId" :value="tokenId">
+              {{ tokenId }}
+            </option>
           </select>
           <button
             class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
@@ -271,7 +299,9 @@ export default {
         <a
           class="uk-form-icon uk-form-icon-flip input-form-icon"
           @click="updateMaxWethOnClick()"
-          ><img src="/img/bnb-icon.png" style="width: 20px" /><span>BNB</span></a
+          ><img src="/img/bnb-icon.png" style="width: 20px" /><span
+            >BNB</span
+          ></a
         >
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
@@ -308,7 +338,8 @@ export default {
       </div>
       <hr class="custom-divider-vertical" />
       <div class="description">
-        <span style="font-weight: bold">TRUST LEVEL:</span> {{ this.trustLevel }}%
+        <span style="font-weight: bold">TRUST LEVEL:</span>
+        {{ this.trustLevel }}%
       </div>
       <div class="wrap">
         <span
@@ -319,7 +350,9 @@ export default {
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon"
-          ><img src="/img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
+          ><img src="/img/foxs-icon.png" style="width: 20px" /><span
+            >FOXS</span
+          ></a
         >
         <input
           readonly

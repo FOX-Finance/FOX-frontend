@@ -8,6 +8,7 @@ import {
   getCollateralAmount,
   buyback,
   getBalance,
+  getTokenIdsOfOwner,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -18,6 +19,7 @@ export default {
       approval_foxs: false,
       approval_fox: false,
 
+      tokenIds: [],
       cdp: "",
       foxs: ethers.BigNumber.from("0"),
       weth: ethers.BigNumber.from("0"),
@@ -64,16 +66,22 @@ export default {
     },
   },
   mounted() {
+    try {
+      this.updateValues();
+      this.checkAllowance();
+    } catch (e) {}
+
     this.emitter.on("metamask-connect-event", (msg) => {
       this.connected = msg;
-      if (this.connected) this.checkAllowance();
+      if (this.connected) {
+        this.updateValues();
+        this.checkAllowance();
+      }
     });
 
     if (getAccount() !== "") {
       this.connected = true;
     }
-
-    this.checkAllowance();
   },
   methods: {
     checkAllowance: function () {
@@ -86,6 +94,11 @@ export default {
             }
           });
         }
+      });
+    },
+    updateValues: function () {
+      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
+        this.tokenIds = tokenIds;
       });
     },
     connectOnClick: function () {
@@ -170,8 +183,11 @@ export default {
             aria-label="Custom controls"
             class="form-button uk-form-width-medium uk-form-large"
             @change="changeCDP"
+            :disabled="!connected"
           >
-            <option value="">Please select...</option>
+            <option v-for="tokenId in tokenIds" :key="tokenId" :value="tokenId">
+              {{ tokenId }}
+            </option>
           </select>
           <button
             class="uk-button uk-button-grey form-button uk-form-width-medium uk-form-large uk-text-left"
@@ -188,11 +204,16 @@ export default {
         </div>
       </div>
       <div class="wrap">
-        <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+        <span
+          class="icon-circle"
+          uk-icon="icon: arrow-down; ratio: 1.5;"
+        ></span>
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon"
-          ><img src="/img/foxs-icon.png" style="width: 20px" /><span>FOXS</span></a
+          ><img src="/img/foxs-icon.png" style="width: 20px" /><span
+            >FOXS</span
+          ></a
         >
         <input
           class="uk-input input-form uk-form-width-medium uk-form-large"
@@ -203,11 +224,16 @@ export default {
         />
       </div>
       <div class="wrap">
-        <span class="icon-circle" uk-icon="icon: arrow-down; ratio: 1.5;"></span>
+        <span
+          class="icon-circle"
+          uk-icon="icon: arrow-down; ratio: 1.5;"
+        ></span>
       </div>
       <div class="uk-inline form-icon">
         <a class="uk-form-icon uk-form-icon-flip input-form-icon"
-          ><img src="/img/bnb-icon.png" style="width: 20px" /><span>BNB</span></a
+          ><img src="/img/bnb-icon.png" style="width: 20px" /><span
+            >BNB</span
+          ></a
         >
         <input
           readonly
