@@ -11,7 +11,7 @@ import {
   redeem,
   getTrustLevel,
   getMaxLTV,
-  getTokenIdsOfOwner,
+  getTokenIds,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -122,8 +122,8 @@ export default {
       getMaxLTV().then((result) => {
         this.maxLTV = +(result / 100).toFixed(2);
       });
-      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
-        this.tokenIds = tokenIds;
+      getTokenIds().then((result) => {
+        this.tokenIds = result;
       });
     },
     connectOnClick: function () {
@@ -140,24 +140,31 @@ export default {
         }
       });
     },
-    approveOnClick: function () {
+    approveOnClick: async function () {
       console.log("approveOnClick (approval_fox) : ", this.approval_fox);
       if (!this.approval_fox) {
         this.emitter.emit("loading-event", true);
-        approveMax("FOX").then((success) => {
-          this.emitter.emit("loading-event", false);
+        try {
+          const success = await approveMax("FOX");
           if (success) this.approval_fox = true;
           else this.approval_fox = false;
-        });
+        } catch (e) {
+        } finally {
+          this.emitter.emit("loading-event", false);
+        }
       }
     },
-    redeemOnClick: function () {
+    redeemOnClick: async function () {
       this.emitter.emit("loading-event", true);
-      redeem(this.cdp, this.fox, this.weth).then((result) => {
-        this.emitter.emit("loading-event", false);
+      try {
+        const result = await redeem(this.cdp, this.fox, this.weth);
         if (result) console.log("redeem success!");
         else console.log("redeem failed!");
-      });
+        this.tokenIds = await getTokenIds();
+      } catch (e) {
+      } finally {
+        this.emitter.emit("loading-event", false);
+      }
     },
     changeCDP: function () {
       getdefaultValuesRedeem(this.cdp).then((result) => {
@@ -165,6 +172,9 @@ export default {
         this.setWETH(result.collateralAmount_);
         this.ltv = result.ltv_;
         this.setFOXS(result.shareAmount_);
+      });
+      getTokenIds().then((result) => {
+        this.tokenIds = result;
       });
     },
     setFOX: function (bigint_) {

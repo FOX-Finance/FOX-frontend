@@ -15,7 +15,7 @@ import {
   getLtvRangeWhenMint,
   getFoxsRangeWhenMint,
   getWethRangeWhenMint,
-  getTokenIdsOfOwner,
+  getTokenIds,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -135,8 +135,8 @@ export default {
       getMaxLTV().then((result) => {
         this.maxLTV = +(result / 100).toFixed(2);
       });
-      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
-        this.tokenIds = tokenIds;
+      getTokenIds().then((result) => {
+        this.tokenIds = result;
       });
     },
     connectOnClick: function () {
@@ -153,31 +153,41 @@ export default {
         }
       });
     },
-    approveOnClick: function () {
+    approveOnClick: async function () {
       console.log("approveOnClick (approval_weth) : ", this.approval_weth);
       if (!this.approval_weth) {
         this.emitter.emit("loading-event", true);
-        approveMax("WETH").then((success) => {
-          this.emitter.emit("loading-event", false);
+        try {
+          const success = await approveMax("WETH");
           if (success) this.approval_weth = true;
           else this.approval_weth = false;
-        });
+        } catch (e) {
+        } finally {
+          this.emitter.emit("loading-event", false);
+        }
       } else if (!this.approval_foxs) {
         this.emitter.emit("loading-event", true);
-        approveMax("FOXS").then((success) => {
-          this.emitter.emit("loading-event", false);
+        try {
+          const success = await approveMax("FOXS");
           if (success) this.approval_foxs = true;
           else this.approval_foxs = false;
-        });
+        } catch (e) {
+        } finally {
+          this.emitter.emit("loading-event", false);
+        }
       }
     },
-    mintOnClick: function () {
+    mintOnClick: async function () {
       this.emitter.emit("loading-event", true);
-      openAndDepositAndBorrow(this.weth, this.fox).then((result) => {
-        this.emitter.emit("loading-event", false);
+      try {
+        const result = await openAndDepositAndBorrow(this.weth, this.fox);
         if (result) console.log("mint success!");
         else console.log("mint failed!");
-      });
+        this.tokenIds = await getTokenIds();
+      } catch (e) {
+      } finally {
+        this.emitter.emit("loading-event", false);
+      }
     },
     changeCDP: function () {
       getdefaultValuesMint(this.cdp).then((result) => {
@@ -186,8 +196,8 @@ export default {
         this.setFOXS(result.shareAmount_);
         this.setFOX(result.stableAmount_);
       });
-      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
-        this.tokenIds = tokenIds;
+      getTokenIds().then((result) => {
+        this.tokenIds = result;
       });
     },
     setWETH: function (bigint_) {

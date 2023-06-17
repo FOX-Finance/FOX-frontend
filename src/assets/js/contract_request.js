@@ -12,6 +12,7 @@ async function openAndDepositAndBorrow_contract(_contract, _account, _depositAmo
     console.log("_borrowAmount", _borrowAmount)
     console.log("-- [request] openAndDepositAndBorrow");
     let response = await _contract.connect(_account).openAndDepositAndBorrow(_depositAmount, _borrowAmount);
+    await response.wait();
     console.log("-- [response] openAndDepositAndBorrow :", response);
     return response;
 }
@@ -113,7 +114,7 @@ async function defaultValuesMint_contract(_contract, _account, _id) {
 async function defaultValueRedeem_contract(_contract, _account, _id) {
     console.log("-- [request] defaultValueRedeem", _id);
     let response = await _contract.defaultValueRedeem(_account.getAddress(), _id);
-    console.log("-- [response] defaultValueRedeem :", response);
+    console.log("-- >>> [response] defaultValueRedeem :", response);
     return response;
 }
 

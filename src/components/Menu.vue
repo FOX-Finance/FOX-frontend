@@ -18,7 +18,7 @@
         <div id="nav-title-sm" class="uk-navbar-center">
           <div class="uk-width-1-1">
             <div class="logo">
-              F<img src="/img/logo.png" style="height: 28px; margin-bottom: 7px" />X
+              F<img src="/img/fox-icon.png" style="height: 28px; margin-bottom: 7px" />X
               Finance
             </div>
           </div>
@@ -53,7 +53,7 @@
     <div id="nav-menu" class="uk-width-1-1">
       <div class="uk-width-1-1">
         <div class="logo">
-          F<img src="/img/logo.png" style="height: 28px; margin-bottom: 7px" />X Finance
+          F<img src="/img/fox-icon.png" style="height: 28px; margin-bottom: 7px" />X Finance
         </div>
       </div>
       <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>

@@ -1,7 +1,9 @@
 <script>
 import {
   getAccount,
-  getTokenIdsOfOwner,
+  getTokenIds,
+  getCouponIds,
+  getAllowance,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -48,11 +50,11 @@ export default {
       });
     },
     updateValues: function () {
-      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
-        this.tokenIds = tokenIds;
+      getTokenIds().then((result) => {
+        this.tokenIds = result;
       });
-      getTokenIdsOfOwner("Coupon").then((couponIds) => {
-        this.couponIds = couponIds;
+      getCouponIds((result) => {
+        this.couponIds = result;
       });
     },
     changeCDP: function () {},

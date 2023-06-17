@@ -11,7 +11,7 @@ import {
   recollateralize,
   getTrustLevel,
   getMaxLTV,
-  getTokenIdsOfOwner,
+  getTokenIds,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -108,8 +108,8 @@ export default {
       getMaxLTV().then((result) => {
         this.maxLTV = +(result / 100).toFixed(2);
       });
-      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
-        this.tokenIds = tokenIds;
+      getTokenIds().then((result) => {
+        this.tokenIds = result;
       });
     },
     connectOnClick: function () {
@@ -126,23 +126,29 @@ export default {
         }
       });
     },
-    approveOnClick: function () {
+    approveOnClick: async function () {
       if (!this.approval_weth) {
         this.emitter.emit("loading-event", true);
-        approveMax("WETH").then((success) => {
-          this.emitter.emit("loading-event", false);
+        try {
+          const success = await approveMax("WETH");
           if (success) this.approval_weth = true;
           else this.approval_weth = false;
-        });
+        } catch (e) {
+        } finally {
+          this.emitter.emit("loading-event", false);
+        }
       }
     },
-    RecollateralizeOnClick: function () {
+    RecollateralizeOnClick: async function () {
       this.emitter.emit("loading-event", true);
-      recollateralize(this.cdp, this.weth, this.ltv).then((result) => {
-        this.emitter.emit("loading-event", false);
+      try {
+        const result = await recollateralize(this.cdp, this.weth, this.ltv);
         if (result) console.log("recollateralize success!");
         else console.log("recollateralize failed!");
-      });
+      } catch (e) {
+      } finally {
+        this.emitter.emit("loading-event", false);
+      }
     },
     changeCDP: function () {
       getdefaultValuesRecollateralize(this.cdp).then((result) => {

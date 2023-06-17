@@ -8,7 +8,7 @@ import {
   getCollateralAmount,
   buyback,
   getBalance,
-  getTokenIdsOfOwner,
+  getTokenIds,
 } from "../assets/js/interface_request.js";
 import { ethers } from "ethers";
 
@@ -97,8 +97,8 @@ export default {
       });
     },
     updateValues: function () {
-      getTokenIdsOfOwner("FOXFARM").then((tokenIds) => {
-        this.tokenIds = tokenIds;
+      getTokenIds().then((result) => {
+        this.tokenIds = result;
       });
     },
     connectOnClick: function () {
@@ -115,31 +115,40 @@ export default {
         }
       });
     },
-    approveOnClick: function () {
+    approveOnClick: async function () {
       console.log("approveOnClick (approval_foxs) : ", this.approval_foxs);
       if (!this.approval_foxs) {
         this.emitter.emit("loading-event", true);
-        approveMax("FOXS").then((success) => {
-          this.emitter.emit("loading-event", false);
+        try {
+          const success = await approveMax("FOXS");
           if (success) this.approval_foxs = true;
           else this.approval_foxs = false;
-        });
+        } catch (e) {
+        } finally {
+          this.emitter.emit("loading-event", false);
+        }
       } else if (!this.approval_fox) {
         this.emitter.emit("loading-event", true);
-        approveMax("FOX").then((success) => {
-          this.emitter.emit("loading-event", false);
+        try {
+          const success = await approveMax("FOX");
           if (success) this.approval_fox = true;
           else this.approval_fox = false;
-        });
+        } catch (e) {
+        } finally {
+          this.emitter.emit("loading-event", false);
+        }
       }
     },
-    buybackOnClick: function () {
+    buybackOnClick: async function () {
       this.emitter.emit("loading-event", true);
-      buyback(this.cdp, this.foxs).then((result) => {
-        this.emitter.emit("loading-event", false);
+      try {
+        const result = await buyback(this.cdp, this.foxs);
         if (result) console.log("buyback success!");
         else console.log("buyback failed!");
-      });
+      } catch (e) {
+      } finally {
+        this.emitter.emit("loading-event", false);
+      }
     },
     changeCDP: function () {
       /*
@@ -185,7 +194,11 @@ export default {
             @change="changeCDP"
             :disabled="!connected"
           >
-            <option v-for="tokenId in tokenIds" :key="tokenId" :value="tokenId">
+            <option
+              v-for="tokenId in tokenIds"
+              :key="tokenId"
+              :value="tokenId"
+            >
               {{ tokenId }}
             </option>
           </select>

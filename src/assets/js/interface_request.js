@@ -1,25 +1,41 @@
-import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, GATEWAY_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI, GATEWAY_CONTRACT_ABI } from "./contract.js"
+import { FOX_CONTRACT_ADDR, FOX_CONTRACT_ABI, FOXFARM_CONTRACT_ADDR, FOXFARM_CONTRACT_ABI, WETH_CONTRACT_ADDR, FOXS_CONTRACT_ADDR, SIN_CONTRACT_ADDR, GATEWAY_CONTRACT_ADDR, WETH_CONTRACT_ABI, FOXS_CONTRACT_ABI, SIN_CONTRACT_ABI, GATEWAY_CONTRACT_ABI, COUPON_CONTRACT_ADDR, COUPON_CONTRACT_ABI } from "./contract.js"
 import { approveMax_contract, openAndDepositAndBorrow_contract, RepayAndWithdraw_contract, buybackRepayDebt_contract, recollateralize_contract, allowance_contract, requiredShareAmountFromCollateralToLtv_contract, requiredCollateralAmountFromShareToLtv_contract, expectedMintAmountToLtv_contract, defaultValuesMint_contract, defaultValueRedeem_contract, defaultValuesRecollateralize_contract, expectedRedeemAmountToLtv_contract, balanceOf_contract, exchangedCollateralAmountFromShareToLtv_contract, exchangedShareAmountFromCollateralToLtv_contract, trustLevel_contract, maxLTV_contract, ltvRangeWhenMint_contract, shareAmountRangeWhenMint_contract, collateralAmountRangeWhenMint_contract, ltvRangeWhenRedeem_contract, stableAmountRangeWhenRedeem_contract, ltvRangeWhenBuyback_contract, shareAmountRangeWhenBuyback_contract, ltvRangeWhenRecollateralize_contract, collateralAmountRangeWhenRecollateralize_contract, faucet_weth, faucet_foxs, tokenIdsOfOwner } from "./contract_request.js"
 
 import { ethers } from "ethers";
 let provider = new ethers.providers.Web3Provider(window.ethereum);
 
 // TODO
-// // localhost
-// const targetChainId = '0x539';
-// const rpcUrl = "http://localhost:8545";
-// const chainName = "localhost";
-// const nativeCurrency = { name: "LocalCoin", decimals: 18, symbol: "LCC" };
-// FIL-test
-const targetChainId = '0x4CB2F';
-const rpcUrl = "https://api.calibration.node.glif.io/rpc/v1";
-const chainName = "Cailbration";
-const nativeCurrency = { name: "Filecoin", decimals: 18, symbol: "FIL" };
+// localhost
+const targetChainId = '0x539';
+const rpcUrl = "http://localhost:8545";
+const chainName = "localhost";
+const nativeCurrency = { name: "LocalCoin", decimals: 18, symbol: "LCC" };
+// // FIL-test
+// const targetChainId = '0x4CB2F';
+// const rpcUrl = "https://api.calibration.node.glif.io/rpc/v1";
+// const chainName = "Cailbration";
+// const nativeCurrency = { name: "Filecoin", decimals: 18, symbol: "FIL" };
 
 const ETHERS_MAX = ethers.constants.MaxUint256;
 
 let account = '';
 let address = '';
+let tokenIds = [];
+let couponIds = [];
+
+async function getTokenIds() {
+    let _contract = getContract("FOXFARM");
+    if (_contract === '' || getAccount() === '') return [];
+    tokenIds = await tokenIdsOfOwner(_contract, address);
+    return tokenIds;
+}
+
+async function getCouponIds() {
+    let _contract = getContract("COUPON");
+    if (_contract === '' || getAccount() === '') return [];
+    couponIds = await tokenIdsOfOwner(_contract, address);
+    return couponIds;
+}
 
 let contract_fox = '';
 let contract_foxfarm = '';
@@ -27,6 +43,7 @@ let contract_weth = '';
 let contract_foxs = '';
 let contract_sin = '';
 let contract_gateway = '';
+let contract_coupon = '';
 
 /* 
  * Initialize functions
@@ -39,6 +56,7 @@ async function connectContract() {
     contract_foxs = new ethers.Contract(FOXS_CONTRACT_ADDR, FOXS_CONTRACT_ABI, provider);
     contract_sin = new ethers.Contract(SIN_CONTRACT_ADDR, SIN_CONTRACT_ABI, provider);
     contract_gateway = new ethers.Contract(GATEWAY_CONTRACT_ADDR, GATEWAY_CONTRACT_ABI, provider);
+    contract_coupon = new ethers.Contract(COUPON_CONTRACT_ADDR, COUPON_CONTRACT_ABI, provider);
     console.log("connect to contract done.");
 }
 
@@ -130,6 +148,7 @@ function getContract(contractName) {
     else if (contractName === "FOXS") return contract_foxs;
     else if (contractName === "SIN") return contract_sin;
     else if (contractName === "GATEWAY") return contract_gateway;
+    else if (contractName === "COUPON") return contract_coupon;
 }
 
 function getContractImg(contractName) {
@@ -201,13 +220,6 @@ async function getFaucetFoxs() {
 }
 
 /* view functions */
-
-async function getTokenIdsOfOwner(contractName) {
-    let _contract = getContract(contractName);
-    if (_contract === '' || getAccount() === '') return 0;
-    let response = await tokenIdsOfOwner(_contract, address);
-    return response;
-}
 
 async function getBalance(contractName) {
     let _contract = getContract(contractName);
@@ -366,4 +378,8 @@ async function getWethRangeWhenRecollateralize(cdpID, ltv) {
     return response;
 }
 
-export { ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, recollateralize, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getdefaultValuesRedeem, getdefaultValuesRecollateralize, getRedeemAmount, getCollateralAmount, getShareAmountInRecollateralize, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getFoxRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback, getLtvRangeWhenRecollateralize, getWethRangeWhenRecollateralize, getFaucetWeth, getFaucetFoxs, getTokenIdsOfOwner };
+export {
+    ETHERS_MAX, connectContract, connectMetamask, addTokenToMetamask, getAccount, approveMax, openAndDepositAndBorrow, redeem, buyback, recollateralize, getBalance, getAllowance, getShareAmount, getDebtAmount, getMintAmount, getdefaultValuesMint, getdefaultValuesRedeem, getdefaultValuesRecollateralize, getRedeemAmount, getCollateralAmount, getShareAmountInRecollateralize, getTrustLevel, getMaxLTV, getLtvRangeWhenMint, getFoxsRangeWhenMint, getWethRangeWhenMint, getLtvRangeWhenRedeem, getFoxRangeWhenRedeem, getLtvRangeWhenBuyback, getShareAmountRangeWhenBuyback, getLtvRangeWhenRecollateralize, getWethRangeWhenRecollateralize,
+    getFaucetWeth, getFaucetFoxs,
+    getTokenIds, getCouponIds
+};
