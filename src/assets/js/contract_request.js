@@ -3,6 +3,7 @@
 async function approveMax_contract(_contract, _account, _address) {
     console.log("-- [request] approveMax");
     let response = await _contract.connect(_account).approveMax(_address);
+    await response.wait();
     console.log("-- [response] approveMax :", response);
     return response;
 }
@@ -20,6 +21,7 @@ async function openAndDepositAndBorrow_contract(_contract, _account, _depositAmo
 async function RepayAndWithdraw_contract(_contract, _account, _id, _repayAmount, _withdrawAmount) {
     console.log("-- [request] RepayAndWithdraw");
     let response = await _contract.connect(_account).repayAndWithdraw(_id, _repayAmount, _withdrawAmount);
+    await response.wait();
     console.log("-- [response] RepayAndWithdraw :", response);
     return response;
 }
@@ -27,6 +29,7 @@ async function RepayAndWithdraw_contract(_contract, _account, _id, _repayAmount,
 async function buybackRepayDebt_contract(_contract, _account, _id, _shareAmount) {
     console.log("-- [request] buybackRepayDebt");
     let response = await _contract.connect(_account).buybackRepayDebt(_id, _shareAmount);
+    await response.wait();
     console.log("-- [response] buybackRepayDebt :", response);
     return response;
 }
@@ -34,6 +37,7 @@ async function buybackRepayDebt_contract(_contract, _account, _id, _shareAmount)
 async function recollateralize_contract(_contract, _account, _id, _collateralAmount, _ltv) {
     console.log("-- [request] recollateralize");
     let response = await _contract.connect(_account).recollateralize(_account.getAddress(), _id, _collateralAmount, _ltv);
+    await response.wait();
     console.log("-- [response] recollateralize :", response);
     return response;
 }
@@ -43,6 +47,7 @@ async function recollateralize_contract(_contract, _account, _id, _collateralAmo
 async function faucet_weth(_contract, _account, _amount) {
     console.log("-- [request] WETH faucet");
     let response = await _contract.connect(_account).mint(_account.getAddress(), _amount);
+    await response.wait();
     console.log("-- [response] WETH faucet", response);
     return response;
 }
@@ -50,6 +55,7 @@ async function faucet_weth(_contract, _account, _amount) {
 async function faucet_foxs(_contract, _account, _amount) {
     console.log("-- [request] FOXS faucet");
     let response = await _contract.connect(_account).mint(_account.getAddress(), _amount);
+    await response.wait();
     console.log("-- [response] FOXS faucet", response);
     return response;
 }
@@ -114,7 +120,7 @@ async function defaultValuesMint_contract(_contract, _account, _id) {
 async function defaultValueRedeem_contract(_contract, _account, _id) {
     console.log("-- [request] defaultValueRedeem", _id);
     let response = await _contract.defaultValueRedeem(_account.getAddress(), _id);
-    console.log("-- >>> [response] defaultValueRedeem :", response);
+    console.log("-- [response] defaultValueRedeem :", response);
     return response;
 }
 
